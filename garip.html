@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ultra Gereksiz Zort Sitesi</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(circle at top, #2b2b2b, #000);
+      color: #00ffcc;
+      font-family: "Comic Sans MS", "Trebuchet MS", sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 10px;
+      text-shadow: 0 0 10px #00ffcc, 0 0 30px #00ffaa;
+      animation: pulse 1.5s infinite alternate;
+    }
+
+    p {
+      opacity: 0.85;
+      margin: 6px 0;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 14px 28px;
+      font-size: 1.1rem;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      background: linear-gradient(135deg, #00ffcc, #00aa88);
+      color: #000;
+      box-shadow: 0 0 15px #00ffcc;
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+
+    button:hover {
+      transform: scale(1.1) rotate(-2deg);
+      box-shadow: 0 0 30px #00ffcc;
+    }
+
+    button:active {
+      transform: scale(0.95) rotate(2deg);
+    }
+
+    .zort {
+      position: fixed;
+      font-size: 2rem;
+      pointer-events: none;
+      animation: fly 2.5s linear forwards;
+    }
+
+    footer {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      padding: 10px;
+      text-align: center;
+      font-size: 0.9rem;
+      background: rgba(0,0,0,0.6);
+      color: #aaa;
+    }
+
+    @keyframes fly {
+      from {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+      to {
+        transform: translateY(-200px) rotate(720deg);
+        opacity: 0;
+      }
+    }
+
+    @keyframes pulse {
+      from { transform: scale(1); }
+      to { transform: scale(1.08); }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>💨 Z O R T 💨</h1>
+  <p>Bu site hiçbir işe yaramaz.</p>
+  <p>Ama yine de buradasın.</p>
+
+  <button onclick="zortla()">ZORTLA</button>
+
+  <!-- Harici link yok: Web Audio ile yerli ve milli osuruk -->
+
+  <p id="counter" style="margin-top:18px; font-size:1.2rem;"></p>
+
+  <footer>
+    ⏳ Bu sitede katledilen süre: <span id="time">0 saniye</span>
+  </footer>
+
+  <script>
+    function formatTime(totalSeconds) {
+      const days = Math.floor(totalSeconds / 86400);
+      const hours = Math.floor((totalSeconds % 86400) / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const secs = totalSeconds % 60;
+
+      let parts = [];
+      if (days > 0) parts.push(days + " gün");
+      if (hours > 0) parts.push(hours + " saat");
+      if (minutes > 0) parts.push(minutes + " dakika");
+      parts.push(secs + " saniye");
+
+      return parts.join(" ");
+    }
+
+    let seconds = 0;
+    let zortCount = 0;
+
+    setInterval(() => {
+      seconds++;
+      document.getElementById("time").textContent = formatTime(seconds);
+    }, 1000);
+
+    function zortla() {
+      // Osuruk sesi (404-proof)
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = "sawtooth";
+      osc.frequency.setValueAtTime(120, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(40, ctx.currentTime + 0.6);
+
+      gain.gain.setValueAtTime(0.8, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start();
+      osc.stop(ctx.currentTime + 0.6);
+      zortCount++;
+      document.getElementById("counter").textContent =
+        "Şu ana kadar " + zortCount + " kez zortladın. Tebrikler.";
+
+      const el = document.createElement("div");
+      el.className = "zort";
+      el.textContent = Math.random() > 0.5 ? "ZORT" : "💨";
+      el.style.left = Math.random() * window.innerWidth + "px";
+      el.style.top = Math.random() * window.innerHeight + "px";
+      el.style.color = `hsl(${Math.random()*360},100%,70%)`;
+
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 2500);
+    }
+
+    // Otomatik gereksizlik
+    setInterval(() => {
+      if (Math.random() < 0.3) {
+        zortla();
+      }
+    }, 3000);
+  </script>
+
+</body>
+</html>
