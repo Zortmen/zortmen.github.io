@@ -1,172 +1,348 @@
 <!DOCTYPE html>
-<html lang="tr">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ultra Gereksiz Zort Sitesi</title>
+<html lang="tr"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Zortmen | Resmi Zort Gerçeği</title>
+  <meta name="description" content="Zortmen nedir? Zortlar kimdir? Zortpedia, anatomi, kronoloji ve 3D zort oyunları.">
+
   <style>
-    body {
-      margin: 0;
-      min-height: 100vh;
-      background: radial-gradient(circle at top, #2b2b2b, #000);
-      color: #00ffcc;
-      font-family: "Comic Sans MS", "Trebuchet MS", sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      overflow-x: hidden;
+    :root{
+      --bg:#07070d;
+      --panel:#0f1020;
+      --neon:#7cff00;
+      --neon2:#00eaff;
+      --text:#f4f4f6;
     }
 
-    h1 {
-      font-size: 3rem;
-      margin-bottom: 10px;
-      text-shadow: 0 0 10px #00ffcc, 0 0 30px #00ffaa;
-      animation: pulse 1.5s infinite alternate;
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      font-family:Inter,Segoe UI,Arial,sans-serif;
+      background:
+        radial-gradient(800px 400px at 20% 0%,rgba(124,255,0,.12),transparent 60%),
+        radial-gradient(900px 500px at 80% 10%,rgba(0,234,255,.12),transparent 60%),
+        radial-gradient(1200px 600px at top,#121233,var(--bg));
+      color:var(--text);
+      line-height:1.6;
     }
 
-    p {
-      opacity: 0.85;
-      margin: 6px 0;
+    header{
+      position:sticky;
+      top:0;
+      z-index:10;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:20px 40px;
+      background:rgba(7,7,13,.78);
+      backdrop-filter:blur(12px);
+      border-bottom:1px solid rgba(124,255,0,.25);
     }
 
-    button {
-      margin-top: 20px;
-      padding: 14px 28px;
-      font-size: 1.1rem;
-      border-radius: 999px;
-      border: none;
-      cursor: pointer;
-      background: linear-gradient(135deg, #00ffcc, #00aa88);
-      color: #000;
-      box-shadow: 0 0 15px #00ffcc;
-      transition: transform 0.1s, box-shadow 0.1s;
+    header img{
+      height:48px;
+      filter:
+        drop-shadow(0 0 12px var(--neon))
+        drop-shadow(0 0 24px rgba(124,255,0,.4));
     }
 
-    button:hover {
-      transform: scale(1.1) rotate(-2deg);
-      box-shadow: 0 0 30px #00ffcc;
+    nav a{
+      color:var(--text);
+      margin-left:24px;
+      text-decoration:none;
+      font-weight:600;
+      position:relative;
     }
 
-    button:active {
-      transform: scale(0.95) rotate(2deg);
+    nav a::after{
+      content:"";
+      position:absolute;
+      left:0;bottom:-6px;
+      width:0;height:2px;
+      background:linear-gradient(90deg,var(--neon),var(--neon2));
+      transition:.3s;
     }
 
-    .zort {
-      position: fixed;
-      font-size: 2rem;
-      pointer-events: none;
-      animation: fly 2.5s linear forwards;
+    nav a:hover{
+      color:var(--neon);
     }
 
-    footer {
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-      padding: 10px;
-      text-align: center;
-      font-size: 0.9rem;
-      background: rgba(0,0,0,0.6);
-      color: #aaa;
+    nav a:hover::after{
+      width:100%;
     }
 
-    @keyframes fly {
-      from {
-        transform: translateY(0) rotate(0deg);
-        opacity: 1;
-      }
-      to {
-        transform: translateY(-200px) rotate(720deg);
-        opacity: 0;
-      }
+    .hero{
+      min-height:90vh;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      text-align:center;
+      padding:120px 20px;
     }
 
-    @keyframes pulse {
-      from { transform: scale(1); }
-      to { transform: scale(1.08); }
+    .hero h1{
+      font-size:clamp(48px,8vw,72px);
+      margin-bottom:20px;
+      text-shadow:
+        0 0 20px rgba(124,255,0,.6),
+        0 0 60px rgba(124,255,0,.35);
+      letter-spacing:2px;
     }
+
+    .hero span{color:var(--neon)}
+
+    .hero p{
+      font-size:clamp(18px,3vw,24px);
+      max-width:800px;
+    }
+
+    section{
+      padding:120px 40px;
+      max-width:1300px;
+      margin:auto;
+    }
+
+    h2{
+      font-size:clamp(32px,6vw,44px);
+      margin-bottom:30px;
+      text-shadow:0 0 25px rgba(0,234,255,.45);
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+      gap:28px;
+    }
+
+    .card{
+      background:linear-gradient(180deg,#17183a,#0d0e1a);
+      border-radius:22px;
+      padding:28px;
+      box-shadow:
+        0 0 0 1px rgba(124,255,0,.18),
+        0 30px 70px rgba(0,0,0,.65);
+      transition:.35s;
+    }
+
+    .card:hover{
+      transform:translateY(-6px) scale(1.015);
+      box-shadow:
+        0 0 0 1px rgba(124,255,0,.35),
+        0 40px 90px rgba(0,0,0,.8);
+    }
+
+    .card h3{
+      margin-top:0;
+      color:var(--neon);
+    }
+
+    .timeline{
+      border-left:2px solid var(--neon);
+      padding-left:40px;
+    }
+
+    .event{
+      margin-bottom:32px;
+    }
+
+    .event span{
+      color:var(--neon2);
+      font-weight:700;
+    }
+
+    iframe{
+      width:100%;
+      height:700px;
+      border:none;
+      border-radius:22px;
+      background:white;
+      box-shadow:0 0 45px rgba(0,234,255,.35);
+    }
+
+    .oyun-butonu{
+      text-align:center;
+      margin-top:40px;
+    }
+
+    .oyun-butonu button{
+      background:linear-gradient(90deg,#00fff7,#00ff88);
+      color:black;
+      border:none;
+      padding:16px 38px;
+      font-size:18px;
+      font-weight:bold;
+      border-radius:999px;
+      cursor:pointer;
+      box-shadow:
+        0 0 25px rgba(0,255,255,.6),
+        inset 0 0 0 rgba(255,255,255,0);
+      transition:.3s;
+    }
+
+    .oyun-butonu button:hover{
+      transform:scale(1.1);
+      box-shadow:
+        0 0 45px rgba(0,255,255,.95),
+        inset 0 0 12px rgba(255,255,255,.6);
+    }
+
+    .glitch{
+      font-family:monospace;
+      display:inline-block;
+      color:var(--neon2);
+      text-shadow:0 0 10px rgba(0,234,255,.6);
+    }
+
+    footer{
+      padding:80px 40px;
+      text-align:center;
+      opacity:.85;
+    }
+    .logo {
+      border-radius: 25%;
+    }
+
   </style>
 </head>
+
 <body>
+<header>
+  <img src="https://uploads.onecompiler.io/446ptsdzc/446ptk3qx/zortmen.png" alt="Zortmen Logo" class="logo">
+  <nav>
+    <a href="#nedir">Zort Nedir?</a>
+    <a href="#anatomi">Anatomi</a>
+    <a href="#kronoloji">Kronoloji</a>
+    <a href="#zortpedia">Zortpedia</a>
+    <a href="#ceviri">Çeviri</a>
+    <a href="#oyunlar">Oyunlar</a>
+  </nav>
+</header>
 
-  <h1>💨 Z O R T 💨</h1>
-  <p>Bu site hiçbir işe yaramaz.</p>
-  <p>Ama yine de buradasın.</p>
+<section class="hero">
+  <h1>ZORT<span>MEN</span></h1>
+  <p>Bu hayatta 3 şey var: <b>tost</b>, <b>dost</b> ve <span>zort</span>.</p>
+</section>
 
-  <button onclick="zortla()">ZORTLA</button>
+<section id="nedir">
+  <h2>Zort Nedir?</h2>
+  <p>
+  <b>Zortmenler</b>, sıradan bir topluluk değil; 
+  <span>zort</span> gerçeğini kabul etmiş, evrenin görünmeyen katmanlarında
+  yaşamaya uyum sağlamış varlıklardır.
+</p>
 
-  <!-- Harici link yok: Web Audio ile yerli ve milli osuruk -->
+<p>
+  Onlar için zort sadece bir kelime değil,
+  <span>varoluşsal</span> bir titreşimdir.
+  Bilim insanları hâlâ açıklayamasa da,
+  Zortmenler bunu <b>yüzyıllardır</b> biliyor.
+</p>
 
-  <p id="counter" style="margin-top:18px; font-size:1.2rem;"></p>
+<p>
+  Tarih boyunca <span class="glitch">antizort</span> tehdidine karşı duran,
+  <b class="glitch">pırt</b> düzenine boyun eğmeyen bu sülale;
+  anatomi, kronoloji ve oyunlar aracılığıyla
+  insanlığa gerçeği <span>yavaş yavaş</span> öğretmektedir.
+</p>
 
-  <footer>
-    ⏳ Bu sitede katledilen süre: <span id="time">0 saniye</span>
-  </footer>
+<p>
+  Eğer bu sayfadaysan, artık geri dönüş yok.
+  Çünkü bir kez <span>zort</span>u fark eden,
+  asla eski haline <b>dönemez</b>.
+</p>
 
-  <script>
-    function formatTime(totalSeconds) {
-      const days = Math.floor(totalSeconds / 86400);
-      const hours = Math.floor((totalSeconds % 86400) / 3600);
-      const minutes = Math.floor((totalSeconds % 3600) / 60);
-      const secs = totalSeconds % 60;
+ </section>
 
-      let parts = [];
-      if (days > 0) parts.push(days + " gün");
-      if (hours > 0) parts.push(hours + " saat");
-      if (minutes > 0) parts.push(minutes + " dakika");
-      parts.push(secs + " saniye");
+<section id="anatomi">
+  <h2>Zort Sülalesi</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>Antipırt - AntipırtWomen</h3>
+      <p><span class="glitch">?*_—</span>ların düşmanı.</p>
+    </div>
+    <div class="card">
+      <h3>EHZORTUS</h3>
+      <p>Zortların ve Ehlerin <b>2.</b> yöneticisi.</p>
+    </div>
+    <div class="card">
+      <h3><span class="glitch">__—&lt;__*_&gt;[_\</span><!--çünkü gerçek hayattan birinin adını taşıyo bu--></h3>
+      <p>Bu tür için fazla bilgi veremem.</p>
+    </div>
+    <div class="card">
+      <h3>Sıvımen</h3>
+      <p>Saf sıvı form. (Metan ısıtıldı)</p>
+    </div>
+  </div>
+</section>
 
-      return parts.join(" ");
+<section id="kronoloji">
+  <h2>Zort Kronolojisi</h2>
+  <div class="timeline">
+    <div class="event"><span>M.Ö. 1623</span> — İlk Zort fark edildi.</div>
+    <div class="event"><span>1623</span> — İlk Zortmen doğdu.</div>
+    <div class="event"><span>1771</span> — İlk Zort-Women.</div>
+    <div class="event"><span>1945</span> — İlk <span class="glitch">_!^_*+?+</span> ortaya çıktı.</div>
+  </div>
+</section>
+
+<section id="zortpedia">
+  <h2>Zortpedia</h2>
+  <iframe src="https://zortmen.github.io/zortpedia/"></iframe>
+</section>
+
+<section id="ceviri">
+  <h2>Zortmence - Türkçe çeviri</h2>
+ <iframe src="https://zortmen.github.io/ZortmenceCeviri/"></iframe>
+
+</section>
+
+<section id="oyunlar">
+  <h2>Oyunlar</h2>
+  <div class="oyun-butonu">
+    <a href="https://zortmen.github.io/Zortmen-Sitesi/oyun.html">
+      <button>🎮️ Zort Oyunu Aç</button>
+    </a>
+  </div>
+    <div class="oyun-butonu">
+    <a href="garip.html">
+      <button>🎮 Saçma Siteyi Aç</button>
+    </a>
+  </div>
+    <div class="oyun-butonu">
+    <a href="sinir.html">
+      <button>🎮 Zort Testini Aç</button>
+    </a>
+  </div>
+</section>
+<br>
+
+<hr>
+<footer>
+  <p>© Zortmen — Zort Gerçeği İnsanlığa Öğretiliyor</p>
+</footer>
+
+<script>
+  const chars = "!<>-_\\/[]{}—=+*^?#________";
+  const elements = document.querySelectorAll(".glitch");
+
+  function glitch(el){
+    const originalLength = el.textContent.length;
+    let out = "";
+    for(let i=0;i<originalLength;i++){
+      out += chars[Math.floor(Math.random()*chars.length)];
     }
+    el.textContent = out;
+  }
 
-    let seconds = 0;
-    let zortCount = 0;
+  setInterval(()=>{
+    elements.forEach(glitch);
+  },60);
+</script>
 
-    setInterval(() => {
-      seconds++;
-      document.getElementById("time").textContent = formatTime(seconds);
-    }, 1000);
 
-    function zortla() {
-      // Osuruk sesi (404-proof)
-      const ctx = new (window.AudioContext || window.webkitAudioContext)();
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
 
-      osc.type = "sawtooth";
-      osc.frequency.setValueAtTime(120, ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(40, ctx.currentTime + 0.6);
 
-      gain.gain.setValueAtTime(0.8, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
-
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-
-      osc.start();
-      osc.stop(ctx.currentTime + 0.6);
-      zortCount++;
-      document.getElementById("counter").textContent =
-        "Şu ana kadar " + zortCount + " kez zortladın. Tebrikler.";
-
-      const el = document.createElement("div");
-      el.className = "zort";
-      el.textContent = Math.random() > 0.5 ? "ZORT" : "💨";
-      el.style.left = Math.random() * window.innerWidth + "px";
-      el.style.top = Math.random() * window.innerHeight + "px";
-      el.style.color = `hsl(${Math.random()*360},100%,70%)`;
-
-      document.body.appendChild(el);
-      setTimeout(() => el.remove(), 2500);
-    }
-
-    // Otomatik gereksizlik
-    setInterval(() => {
-      if (Math.random() < 0.3) {
-        zortla();
-      }
-    }, 3000);
-  </script>
-
-</body>
-</html>
+</body></html>
