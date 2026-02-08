@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>İmkansız Tuş</title>
+<style>
+  body {
+    margin: 0;
+    background: #000;
+    color: #fff;
+    font-family: Arial, sans-serif;
+    overflow: hidden;
+    user-select: none;
+  }
+
+  #info {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    font-size: 18px;
+    opacity: 0.8;
+  }
+
+  #btn {
+    position: absolute;
+    padding: 18px 32px;
+    font-size: 22px;
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+    background: red;
+    color: white;
+    pointer-events: auto;
+  }
+</style>
+</head>
+<body>
+
+<div id="info">Sen zortmen değilsin.</div>
+<button id="btn">Bunu Sadece zortmenler yakalayabilir.</button>
+
+<script>
+  const btn = document.getElementById("btn");
+
+  function teleport() {
+    const x = Math.random() * (window.innerWidth - btn.offsetWidth);
+    const y = Math.random() * (window.innerHeight - btn.offsetHeight);
+    btn.style.left = x + "px";
+    btn.style.top = y + "px";
+  }
+
+  teleport();
+
+  // Fare yaklaşınca KAÇ
+  document.addEventListener("mousemove", (e) => {
+    const rect = btn.getBoundingClientRect();
+    const bx = rect.left + rect.width / 2;
+    const by = rect.top + rect.height / 2;
+
+    const dx = e.clientX - bx;
+    const dy = e.clientY - by;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+    if (distance < 200) {
+      teleport();
+    }
+  });
+
+  // Tıklamaya karşı HİLE
+  btn.addEventListener("mousedown", (e) => {
+    e.preventDefault();
+    teleport();
+  });
+
+  // Üstüne gelince bile kaçar
+  btn.addEventListener("mouseenter", teleport);
+
+  // Mobil / dokunmatik için
+  btn.addEventListener("touchstart", teleport);
+
+</script>
+
+</body>
+</html>
