@@ -218,6 +218,7 @@
     <a href="#zortpedia">Zortpedia</a>
     <a href="#ceviri">Çeviri</a>
     <a href="#oyunlar">Oyunlar</a>
+    <a href="#mini_zort_testi">Test</a>
   </nav>
 </header>
 
@@ -242,8 +243,8 @@
 </p>
 
 <p>
-  Tarih boyunca <span class="glitch">antizort</span> tehdidine karşı duran,
-  <b class="glitch">pırt</b> düzenine boyun eğmeyen bu sülale;
+  Tarih boyunca <span class="glitch">!___-=*_</span> tehdidine karşı duran,
+  <b class="glitch">?_#_</b> düzenine boyun eğmeyen bu sülale;
   anatomi, kronoloji ve oyunlar aracılığıyla
   insanlığa gerçeği <span>yavaş yavaş</span> öğretmektedir.
 </p>
@@ -261,14 +262,14 @@
   <div class="grid">
     <div class="card">
       <h3>Antipırt - AntipırtWomen</h3>
-      <p><span class="glitch">?*_—</span>ların düşmanı.</p>
+      <p><span class="glitch">[+#\</span>ların düşmanı.</p>
     </div>
     <div class="card">
       <h3>EHZORTUS</h3>
       <p>Zortların ve Ehlerin <b>2.</b> yöneticisi.</p>
     </div>
     <div class="card">
-      <h3><span class="glitch">__—&lt;__*_&gt;[_\</span><!--çünkü gerçek hayattan birinin adını taşıyo bu--></h3>
+      <h3><span class="glitch">__-_}_++[__*</span><!--çünkü gerçek hayattan birinin adını taşıyo bu--></h3>
       <p>Bu tür için fazla bilgi veremem.</p>
     </div>
     <div class="card">
@@ -284,7 +285,7 @@
     <div class="event"><span>M.Ö. 1623</span> — İlk Zort fark edildi.</div>
     <div class="event"><span>1623</span> — İlk Zortmen doğdu.</div>
     <div class="event"><span>1771</span> — İlk Zort-Women.</div>
-    <div class="event"><span>1945</span> — İlk <span class="glitch">_!^_*+?+</span> ortaya çıktı.</div>
+    <div class="event"><span>1945</span> — İlk <span class="glitch">&lt;_\}_/_&gt;</span> ortaya çıktı.</div>
   </div>
 </section>
 
@@ -318,7 +319,290 @@
   </div>
 </section>
 <br>
+<section id="mini_zort_testi">
+  <h2>İleri Seviye Zort Testi</h2>
 
+  <div class="grid">
+
+    <div class="card zort-question" data-correct="D">
+      <h3>Soru 1</h3>
+      <p>
+        Bir zort o***urursa ama kimse duymuyorsa,
+        gerçekten zortlamış mıdır?
+      </p>
+
+      <div class="choices">
+        <button data-choice="A">A) Hayır, sessiz zort sayılmaz.</button>
+        <button data-choice="D">B) Evet, zort duyulmaz çünkü duyana kadar kokudan *lürsün.</button>
+        <button data-choice="C">C) Zort ***urmaz</button>
+        <button data-choice="B">D) Soruyu sorgulamak bile bir saçmalık.</button>
+      </div>
+
+      <p class="result"></p>
+    </div>
+
+    <div class="card zort-question" data-correct="C">
+      <h3>Soru 2</h3>
+      <p>
+        Tost mu önce vardı, yoksa zort mu?
+      </p>
+
+      <div class="choices">
+        <button data-choice="A">A) Tost</button>
+        <button data-choice="C">B) Zort</button>
+        <button data-choice="B">C) İkisi aynı anda</button>
+        <button data-choice="D">D) Ekmek bu sorudan rahatsız oldu.</button>
+      </div>
+
+      <p class="result"></p>
+    </div>
+
+  </div>
+</section>
+
+<style>
+  #mini_zort_testi .choices{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    margin-top:12px;
+  }
+
+  #mini_zort_testi button{
+    background:#111;
+    color:#fff;
+    border:2px solid #333;
+    padding:10px 14px;
+    border-radius:12px;
+    cursor:pointer;
+    transition:.25s;
+    text-align:left;
+  }
+
+  #mini_zort_testi button:hover{
+    border-color:#00eaff;
+  }
+
+  #mini_zort_testi button.correct{
+    border-color:#00ff88;
+    box-shadow:0 0 18px rgba(0,255,136,.9);
+  }
+
+  #mini_zort_testi button.wrong{
+    border-color:#ff3333;
+    box-shadow:0 0 18px rgba(255,0,0,.9);
+  }
+
+  #mini_zort_testi .result{
+    margin-top:12px;
+    font-weight:600;
+  }
+</style>
+
+<script>
+  document.querySelectorAll("#mini_zort_testi .zort-question").forEach(q=>{
+    const correct = q.dataset.correct;
+    const result = q.querySelector(".result");
+
+    q.querySelectorAll("button").forEach(btn=>{
+      btn.addEventListener("click",()=>{
+        if(q.classList.contains("done")) return;
+        q.classList.add("done");
+
+        q.querySelectorAll("button").forEach(b=>{
+          if(b.dataset.choice === correct){
+            b.classList.add("correct");
+          }
+        });
+
+        if(btn.dataset.choice === correct){
+          btn.classList.add("correct");
+          result.textContent =
+            "✔ Doğru. Çünkü bu soru mantıkla değil, zort sezgisiyle çözülür.";
+        }else{
+          btn.classList.add("wrong");
+          result.textContent =
+            "✖ Yanlış. Ama zaten bu testte yanlış yapmak da zortun bir parçası.(!)";
+        }
+      });
+    });
+  });
+</script>
+
+<section id="zortgunlugu">
+  <h2>Zort Günlüğü</h2>
+
+  <div class="timeline">
+    <div class="event">
+      <span>Gün 1</span> — Zortlar gerçek olabilir.
+    </div>
+    <div class="event">
+      <span>Gün 7</span> — Artık her şey biraz zort.
+    </div>
+    <div class="event">
+      <span>Gün 23</span> — Zort gerçekliğini bilmek garip gelmeye başladı.
+    </div>
+    <div class="event">
+      <span>Gün 42</span> — Normal olanın zort olduğunu fark ettim.
+    </div>
+  </div>
+</section>
+
+<section id="zortbilim">
+  <h2>Zort Bilimi</h2>
+
+  <p>
+    Modern bilim zortu ölçemez,
+    çünkü zort ölçülmek istemez.
+  </p>
+
+  <div class="grid">
+    <div class="card">
+      <h3>Zort Parçacığı</h3>
+      <p>
+        Aynı anda hem vardır
+        hem ***urur
+        hem de saçmadır.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>Zort Deney Sonuçları</h3>
+      <p>
+        Deney %100 başarısız oldu
+        ama beklenen sonuç buydu.
+      </p>
+    </div>
+  </div>
+</section>
+<!-- ZORT BUTONU -->
+<div id="zort-button">
+  <button id="zortClick">
+    ZORTA BAS <img src="https://uploads.onecompiler.io/446ptsdzc/446ptk3qx/zortmen.png" width="20px"/>
+  </button>
+  <div id="zortCount">
+    Bu sitede zort butonuna <b>0</b> kere basıldı.
+  </div>
+  <div id="zortGlobalInfo">
+  Herkes toplam <b id="zortGlobal">0</b> kere zorta bastı.
+<script>
+  const NAMESPACE = "zortmen-site";
+  const KEY = "zort-click";
+
+  const globalEl = document.getElementById("zortGlobal");
+
+  // Sayfa açılınca global sayıyı al
+  fetch(`https://api.countapi.xyz/get/${NAMESPACE}/${KEY}`)
+    .then(res => res.json())
+    .then(data => {
+      if(globalEl){
+        globalEl.textContent = data.value || 0;
+      }
+    });
+
+  // ZORT'a basınca global artır
+  zortBtn.addEventListener("click", () => {
+    fetch(`https://api.countapi.xyz/hit/${NAMESPACE}/${KEY}`)
+      .then(res => res.json())
+      .then(data => {
+        if(globalEl){
+          globalEl.textContent = data.value;
+        }
+      });
+  });
+</script>
+</div>
+</div>
+<style>
+  #zortGlobalInfo{
+    background:rgba(0,0,0,.65);
+    padding:8px 14px;
+    border-radius:14px;
+    font-size:13px;
+    box-shadow:0 0 18px rgba(124,255,0,.4);
+    text-align:center;
+  }
+  #zort-button{
+    position:fixed;
+    right:24px;
+    bottom:24px;
+    z-index:9999;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:10px;
+  }
+  
+  #zortClick img {
+    border-radius: 25%;
+  }
+
+  #zortClick {
+    background:linear-gradient(90deg,#7cff00,#00eaff);
+    color:#000;
+    border:none;
+    padding:16px 26px;
+    font-size:18px;
+    font-weight:800;
+    border-radius:999px;
+    cursor:pointer;
+    box-shadow:
+      0 0 25px rgba(124,255,0,.8),
+      0 0 45px rgba(0,234,255,.6);
+    transition:.25s;
+    
+  }
+
+  #zortClick:hover{
+    transform:scale(1.12);
+    box-shadow:
+      0 0 45px rgba(124,255,0,1),
+      0 0 70px rgba(0,234,255,1);
+  }
+
+  #zortCount{
+    background:rgba(0,0,0,.65);
+    padding:10px 14px;
+    border-radius:14px;
+    font-size:14px;
+    box-shadow:0 0 20px rgba(0,234,255,.4);
+    text-align:center;
+  }
+</style>
+
+<script>
+  const zortBtn = document.getElementById("zortClick");
+  const zortCountEl = document.querySelector("#zortCount b");
+
+  // sessionStorage kullanıyoruz
+  let zortCount = sessionStorage.getItem("zortCount");
+  if (!zortCount) zortCount = 0;
+
+  zortCountEl.textContent = zortCount;
+
+  zortBtn.addEventListener("click", () => {
+    zortCount++;
+    sessionStorage.setItem("zortCount", zortCount);
+    zortCountEl.textContent = zortCount;
+  });
+</script>
+<section id="sonsuz">
+  <h2>Site Bitti.Bye</h2>
+
+  <p>
+    Buraya kadar kaydırdıysan
+    artık geri dönüş yok.Çünkü <b>zort</b>landın. 
+  </p>
+
+  <p class="glitch">
+    burada_hiçbirşey_yok.hem_sen_neden_F12'ye_bastın?
+  </p>
+
+  <p>
+    Sayfa biter.
+    Zort bitmez.
+  </p>
+</section>
 <hr>
 <footer>
   <p>© Zortmen — Zort Gerçeği İnsanlığa Öğretiliyor</p>
@@ -345,5 +629,6 @@
 
 
 
-</body></html>
 
+
+</body></html>
