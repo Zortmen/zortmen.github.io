@@ -483,35 +483,7 @@
   <div id="zortCount">
     Bu sitede zort butonuna <b>0</b> kere basıldı.
   </div>
-  <div id="zortGlobalInfo">
-  Herkes toplam <b id="zortGlobal">0</b> kere zorta bastı.
-<script>
-  const NAMESPACE = "zortmen-site";
-  const KEY = "zort-click";
 
-  const globalEl = document.getElementById("zortGlobal");
-
-  // Sayfa açılınca global sayıyı al
-  fetch(`https://api.countapi.xyz/get/${NAMESPACE}/${KEY}`)
-    .then(res => res.json())
-    .then(data => {
-      if(globalEl){
-        globalEl.textContent = data.value || 0;
-      }
-    });
-
-  // ZORT'a basınca global artır
-  zortBtn.addEventListener("click", () => {
-    fetch(`https://api.countapi.xyz/hit/${NAMESPACE}/${KEY}`)
-      .then(res => res.json())
-      .then(data => {
-        if(globalEl){
-          globalEl.textContent = data.value;
-        }
-      });
-  });
-</script>
-</div>
 </div>
 <style>
   #zortGlobalInfo{
@@ -632,3 +604,4 @@
 
 
 </body></html>
+
