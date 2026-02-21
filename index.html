@@ -204,6 +204,59 @@
     .logo {
       border-radius: 25%;
     }
+    /* Dropdown Konteynırı */
+.dropdown {
+  display: inline-block;
+  margin-left: 24px;
+}
+
+/* Dropdown Butonu */
+.dropbtn {
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+/* Dropdown İçeriği (Gizli) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: var(--panel);
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.5);
+  z-index: 100;
+  border: 1px solid var(--neon);
+  border-radius: 12px;
+  margin-top: 10px;
+  backdrop-filter: blur(10px);
+}
+
+/* Dropdown Linkleri */
+.dropdown-content a {
+  color: var(--text);
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  margin-left: 0; /* Nav'daki margin-left'i sıfırlıyoruz */
+  font-size: 14px;
+  transition: 0.3s;
+}
+
+/* Link Üzerine Gelince */
+.dropdown-content a:hover {
+  background-color: rgba(124, 255, 0, 0.1);
+  color: var(--neon);
+}
+
+/* Fareyi "Daha Fazla" üzerine getirince göster */
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* Dropdown açıldığında alt çizgi animasyonunu butonda da göster */
+.dropdown:hover .dropbtn::after {
+  width: 100%;
+}
 
   </style>
 </head>
@@ -211,15 +264,25 @@
 <body>
 <header>
   <img src="https://uploads.onecompiler.io/446ptsdzc/446ptk3qx/zortmen.png" alt="Zortmen Logo" class="logo">
-  <nav>
-    <a href="#nedir">Zort Nedir?</a>
-    <a href="#anatomi">Anatomi</a>
-    <a href="#kronoloji">Kronoloji</a>
-    <a href="#zortpedia">Zortpedia</a>
-    <a href="#ceviri">Çeviri</a>
-    <a href="#oyunlar">Oyunlar</a>
-    <a href="#mini_zort_testi">Test</a>
-  </nav>
+<nav>
+  <a href="#nedir">Zort Nedir?</a>
+  <a href="#anatomi">Aile Üyeleri</a>
+  <a href="#kronoloji">Kronoloji</a>
+  <a href="#oyunlar">Oyunlar</a>
+  
+  <div class="dropdown">
+    <a href="javascript:void(0)" class="dropbtn">Daha Fazla ▾</a>
+    <div class="dropdown-content">
+      <a href="#zortpedia">Zortpedia</a>
+      <a href="#ceviri">Çeviri</a>
+      <a href="#mini_zort_testi">Test</a>
+      <a href="#zortgunlugu">Günlük</a>
+      <a href="#zortbilim">Bilim</a>
+      <a href="#savas-tablosu">Savaşlar</a>
+      <a href="#isim-olusturucu">Zort Ünvanın</a>
+    </div>
+  </div>
+</nav>
 </header>
 
 <section class="hero">
@@ -243,8 +306,8 @@
 </p>
 
 <p>
-  Tarih boyunca <span class="glitch">!___-=*_</span> tehdidine karşı duran,
-  <b class="glitch">?_#_</b> düzenine boyun eğmeyen bu sülale;
+  Tarih boyunca <span class="glitch">__\/{+_}</span> tehdidine karşı duran,
+  <b class="glitch">-^_{</b> düzenine boyun eğmeyen bu sülale;
   anatomi, kronoloji ve oyunlar aracılığıyla
   insanlığa gerçeği <span>yavaş yavaş</span> öğretmektedir.
 </p>
@@ -262,14 +325,14 @@
   <div class="grid">
     <div class="card">
       <h3>Antipırt - AntipırtWomen</h3>
-      <p><span class="glitch">[+#\</span>ların düşmanı.</p>
+      <p><span class="glitch">\__+</span>ların düşmanı.</p>
     </div>
     <div class="card">
       <h3>EHZORTUS</h3>
       <p>Zortların ve Ehlerin <b>2.</b> yöneticisi.</p>
     </div>
     <div class="card">
-      <h3><span class="glitch">__-_}_++[__*</span><!--çünkü gerçek hayattan birinin adını taşıyo bu--></h3>
+      <h3><span class="glitch">}__/__^-*{{#</span><!--çünkü gerçek hayattan birinin adını taşıyo bu--></h3>
       <p>Bu tür için fazla bilgi veremem.</p>
     </div>
     <div class="card">
@@ -285,7 +348,7 @@
     <div class="event"><span>M.Ö. 1623</span> — İlk Zort fark edildi.</div>
     <div class="event"><span>1623</span> — İlk Zortmen doğdu.</div>
     <div class="event"><span>1771</span> — İlk Zort-Women.</div>
-    <div class="event"><span>1945</span> — İlk <span class="glitch">&lt;_\}_/_&gt;</span> ortaya çıktı.</div>
+    <div class="event"><span>1945</span> — İlk <span class="glitch">{___##—\</span> ortaya çıktı.</div>
   </div>
 </section>
 
@@ -478,7 +541,7 @@
 <!-- ZORT BUTONU -->
 <div id="zort-button">
   <button id="zortClick">
-    ZORTA BAS <img src="https://uploads.onecompiler.io/446ptsdzc/446ptk3qx/zortmen.png" width="20px"/>
+    ZORTA BAS <img src="https://uploads.onecompiler.io/446ptsdzc/446ptk3qx/zortmen.png" width="20px">
   </button>
   <div id="zortCount">
     Bu sitede zort butonuna <b>0</b> kere basıldı.
@@ -540,6 +603,49 @@
     box-shadow:0 0 20px rgba(0,234,255,.4);
     text-align:center;
   }
+  .zort-cerceve-konteynir {
+  margin-top: 30px;
+  overflow-x: auto;
+  padding: 10px;
+}
+
+.zort-kutu-tablo {
+  width: 100%;
+  border-collapse: collapse;
+  /* Dış çerçeve kalınlığı */
+  border: 4px solid var(--neon); 
+  background-color: rgba(15, 16, 32, 0.8);
+}
+
+.zort-kutu-tablo th, .zort-kutu-tablo td {
+  /* Her hücrenin etrafındaki çerçeve */
+  border: 2px solid var(--neon);
+  padding: 15px;
+  text-align: center;
+  color: var(--text);
+}
+
+.zort-kutu-tablo th {
+  background-color: rgba(124, 255, 0, 0.2);
+  color: var(--neon);
+  font-weight: 800;
+}
+
+.tik-isareti {
+  color: #7cff00;
+  font-size: 24px;
+  filter: drop-shadow(0 0 5px #7cff00);
+}
+
+.x-isareti {
+  color: #ff3333;
+  font-size: 24px;
+  filter: drop-shadow(0 0 5px #ff3333);
+}
+
+.zort-kutu-tablo td {
+  font-family: "Sans-Serif", helvetica, serif;
+}
 </style>
 
 <script>
@@ -558,17 +664,74 @@
     zortCountEl.textContent = zortCount;
   });
 </script>
+<section id="savas-tablosu">
+  <h2>Zort Savaş Kayıtları</h2>
+  <div class="zort-cerceve-konteynir">
+    <table class="zort-kutu-tablo">
+      <thead>
+        <tr>
+          <th>KAÇINCI</th>
+          <th>SAAT / TARİH</th>
+          <th>KİME KARŞI</th>
+          <th>YENDİK Mİ</th>
+          <th>KISA BİLGİ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1. zort</td>
+          <td>19.12.2025</td>
+          <td>antizort</td>
+          <td><span class="x-isareti">❌</span></td>
+          <td>yaklaşık 20 zort kaldı,diğerleri vefat etti</td>
+        </tr>
+        <tr>
+          <td>2. zort</td>
+          <td>22.12.2025</td>
+          <td>antizort</td>
+          <td><span class="tik-isareti">✔</span></td>
+          <td>antizortlardan öc alındı,onların soyu tükendi.</td>
+        </tr>
+        <tr>
+          <td>3. zort</td>
+          <td>05.02.2026<br>13.01</td>
+          <td>pırt</td>
+          <td><span class="tik-isareti">✔</span></td>
+          <td>soyları tükendi</td>
+        </tr>
+        <tr>
+          <td>4. zort</td>
+          <td>20.02.2026<br>09.56</td>
+          <td>antizortmen</td>
+          <td><span class="tik-isareti">✔</span></td>
+          <td>soyları tükendi</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+
+<br>
+<section id="isim-olusturucu">
+  <h2>Sülaleye Katıl</h2>
+  <div class="card">
+    <p>Gerçek adını gir ve Zortmen unvanını öğren:</p>
+    <input type="text" id="userName" placeholder="Adın nedir?.." style="padding:10px; border-radius:8px; border:none; width:200px; background:#1a1b3a; color:white; border:1px solid var(--neon2);">
+    <button onclick="zortIsmiYap()" style="background:var(--neon); color:black; padding:10px 20px; border-radius:8px; cursor:pointer; font-weight:bold; border:none; margin-left:10px;">UNVAN AL</button>
+    <h3 id="zortResult" style="margin-top:20px; min-height: 1.2em;"></h3>
+  </div>
+</section>
 <section id="sonsuz">
   <h2>Site Bitti.Bye</h2>
-
+  <h1>UYARI!</h1>
+  <p>bu sitede asla z-o-r-t harflerine sırayla basma!</p>
   <p>
     Buraya kadar kaydırdıysan
     artık geri dönüş yok.Çünkü <b>zort</b>landın. 
   </p>
 
-  <p class="glitch">
-    burada_hiçbirşey_yok.hem_sen_neden_F12'ye_bastın?
-  </p>
+  <p class="glitch">#\]_+*\[_-&gt;{___-_+#[_]_[?&gt;/&gt;_+&lt;_!{?__[_?^\&lt;&gt;____-\__##—?=</p>
 
   <p>
     Sayfa biter.
@@ -581,6 +744,45 @@
 </footer>
 
 <script>
+function zortIsmiYap() {
+    const inputAd = document.getElementById("userName").value.trim();
+    const ad = inputAd.toLowerCase();
+    const resultEl = document.getElementById("zortResult");
+    
+    // --- LİSTELER ---
+    const karaListe = ["antizortmen", "antizort", "pırt", "black friday", "berat", "yavuz selim", "ahmet yusuf"]; // Buraya istemediğin adları ekle
+    const iyiListe = ["ibrahim", "ali", "eh", "ehzortus", "şanlı zort"]; // Buraya sevdiğin adları ekle
+    
+    const unvanlar = ["Zort-ül Ehzort", "Kadim Pırtmaster", "Sıvımen Veliahdı", "Tost Savaşçısı", "Antipırt Avcısı", "Zortpedia Başyazarı","Zort-Women"];
+
+    if(!ad) {
+        resultEl.style.color = "orange";
+        resultEl.textContent = "Önce adını yazmalısın evlat!";
+        return;
+    }
+
+    // 1. KISIM: Kara Liste Kontrolü (Haddini Bildir)
+    if (karaListe.includes(ad)) {
+        resultEl.style.color = "#ff3333"; // Kırmızı
+        resultEl.textContent = `HADDİNİ BİL ${inputAd.toUpperCase()}! Senin gibi birinin bu sülalede yeri yok! Zortlanarak uzaklaş buradan!`;
+        document.body.style.animation = "shake 0.5s"; // Ekranı salla (isteğe bağlı)
+        setTimeout(() => document.body.style.animation = "", 500);
+        document.body.style.filter = "invert(1) hue-rotate(180deg)";
+        return;
+    }
+
+    // 2. KISIM: İyi Liste Kontrolü (Övgü Yağdır)
+    if (iyiListe.includes(ad)) {
+        resultEl.style.color = "#7cff00"; // Neon Yeşil
+        resultEl.textContent = `Oooo, büyük usta ${inputAd.toUpperCase()} gelmiş! Zort dünyasının gerçek efsanesi, sülalemizin onurusun!`;
+        return;
+    }
+
+    // 3. KISIM: Normal Zortmen Adayları
+    const rastgele = unvanlar[Math.floor(Math.random() * unvanlar.length)];
+    resultEl.style.color = "var(--neon2)"; // Mavi/Neon
+    resultEl.textContent = `Hoş geldin, ${rastgele} ${inputAd}! Kaydın ZortCloud'a işlendi.`;
+}
   const chars = "!<>-_\\/[]{}—=+*^?#________";
   const elements = document.querySelectorAll(".glitch");
 
@@ -596,6 +798,22 @@
   setInterval(()=>{
     elements.forEach(glitch);
   },60);
+  let inputBuffer = "";
+  
+document.addEventListener("keydown", (e) => {
+    inputBuffer += e.key.toLowerCase();
+    if (inputBuffer.length > 10) inputBuffer = inputBuffer.substring(1);
+    
+    if (inputBuffer.includes("zort")) {
+        // Gizli efekt: Ekranı salla ve renkleri ters çevir
+        document.body.style.filter = "invert(1) hue-rotate(180deg)";
+        alert("YAPMA DEMİŞTİM!");
+        setTimeout(() => {
+            document.body.style.filter = "none";
+        }, 10000);
+        inputBuffer = ""; // Tamponu temizle
+    }
+});
 </script>
 
 
@@ -603,5 +821,11 @@
 
 
 
+
+
+
 </body></html>
+
+</body></html>
+
 
