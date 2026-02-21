@@ -1,204 +1,38 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZORT HAPSİ - KAÇIŞ YOK</title>
-    <style>
-        :root {
-            --neon-red: #ff3333;
-            --neon-green: #7cff00;
-        }
-
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            background: #000;
-            font-family: 'Courier New', Courier, monospace;
-            overflow: hidden; /* Sayfa kaydırılamaz */
-        }
-
-        #zort-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, #1a0000 0%, #000 100%);
-            z-index: 99999;
-        }
-
-        .header-warning {
-            color: var(--neon-red);
-            text-align: center;
-            font-size: 2.5rem;
-            text-shadow: 0 0 20px red;
-            margin-top: 20px;
-            animation: pulse 0.5s infinite alternate;
-        }
-
-        @keyframes pulse {
-            from { transform: scale(1); opacity: 1; }
-            to { transform: scale(1.05); opacity: 0.7; }
-        }
-
-        .fake-window {
-            position: absolute;
-            width: 320px;
-            background: #c0c0c0; /* Klasik eski Windows gri rengi */
-            border: 3px solid #fff;
-            border-right-color: #808080;
-            border-bottom-color: #808080;
-            box-shadow: 5px 5px 15px rgba(0,0,0,0.5);
-            padding: 2px;
-            user-select: none;
-        }
-
-        .window-title {
-            background: linear-gradient(90deg, #000080, #1084d0);
-            color: white;
-            padding: 3px 10px;
-            font-weight: bold;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 14px;
-        }
-
-        .window-body {
-            padding: 15px;
-            text-align: center;
-            color: #000;
-        }
-
-        .window-body input {
-            width: 90%;
-            margin-bottom: 10px;
-            padding: 5px;
-            border: 2px inset #eee;
-        }
-
-        .btn {
-            padding: 5px 15px;
-            cursor: pointer;
-            font-weight: bold;
-            border: 2px outset #eee;
-        }
-
-        .btn-close {
-            background: #c0c0c0;
-            color: black;
-            font-size: 10px;
-            border: 1px outset #fff;
-            width: 16px;
-            height: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .zort-logo {
-            width: 50px;
-            height: 50px;
-            margin-bottom: 10px;
-            animation: spin 2s linear infinite;
-        }
-
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-    </style>
-</head>
-<body>
-
-<div id="zort-overlay">
-    <h1 class="header-warning">SİSTEM ZORTLANDI</h1>
-    <p style="color: white; text-align: center;">Kara listedesin. Özür dilemeden gidemezsin!</p>
-</div>
-
-<script>
-let windowCount = 0;
-const affetmeKelimeleri = ["özür dilerim", "özür", "zort", "i ❤ zort", "özür zort", "affet beni zortmen"];
-
-// Sahte Pencere Oluşturma Fonksiyonu
-function spawnWindow() {
-    windowCount++;
-    const win = document.createElement("div");
-    win.id = "win-" + windowCount;
-    win.className = "fake-window";
-    
-    // Rastgele Konum
-    const x = Math.random() * (window.innerWidth - 340);
-    const y = Math.random() * (window.innerHeight - 200);
-    win.style.left = x + "px";
-    win.style.top = y + "px";
-    win.style.zIndex = 1000 + windowCount;
-
-    win.innerHTML = `
-        <div class="window-title">
-            <span>ZortError.exe</span>
-            <div class="btn-close" onclick="punish()">X</div>
-        </div>
-        <div class="window-body">
-            <img src="https://uploads.onecompiler.io/446ptsdzc/446ptk3qx/zortmen.png" class="zort-logo">
-            <p><b>AF DİLEME PANELİ</b></p>
-            <input type="text" id="input-${windowCount}" placeholder="Özür dilerim yaz...">
-            <br>
-            <button class="btn" onclick="check(${windowCount})">GÖNDER</button>
-            <button class="btn" onclick="punish()">KAPAT</button>
-        </div>
-    `;
-
-    document.getElementById("zort-overlay").appendChild(win);
-    
-    // Pencereleri otomatik zıplatma (opsiyonel)
-    moveRandomly(win);
-}
-
-// Yanlış yapanı cezalandır (2 yeni pencere aç)
-function punish() {
-    alert("KAPATAMAZSIN! Zortmen kuralları geçerli.");
-    spawnWindow();
-    spawnWindow();
-}
-
-// Özür kontrolü
-function check(id) {
-    const val = document.getElementById("input-" + id).value.toLowerCase().trim();
-    if (affetmeKelimeleri.includes(val)) {
-        alert("Zortmen yüceliğini gösterdi ve seni affetti. Şimdi git...");
-        window.location.href = "index.html"; // Ana sayfaya gönder
-    } else {
-        alert("BU ÖZÜR YETERLİ DEĞİL!");
-        spawnWindow();
+// --- 1. TAM EKRAN ZORLAMASI ---
+function tamEkranYap() {
+    let elem = document.documentElement;
+    if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+    } else if (elem.mozRequestFullScreen) { /* Firefox */
+        elem.mozRequestFullScreen();
+    } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
+        elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) { /* IE/Edge */
+        elem.msRequestFullscreen();
     }
 }
 
-// Pencerelerin hafifçe titremesi/hareket etmesi
-function moveRandomly(el) {
-    let x = parseInt(el.style.left);
-    let y = parseInt(el.style.top);
-    let dx = (Math.random() - 0.5) * 10;
-    let dy = (Math.random() - 0.5) * 10;
+// Kullanıcı sayfada herhangi bir yere tıkladığı an tam ekran olur
+document.addEventListener("click", tamEkranYap);
 
-    setInterval(() => {
-        x += dx;
-        y += dy;
-        if (x < 0 || x > window.innerWidth - 320) dx = -dx;
-        if (y < 0 || y > window.innerHeight - 200) dy = -dy;
-        el.style.left = x + "px";
-        el.style.top = y + "px";
-    }, 50);
-}
+// --- 2. TUŞ ENGELLEME (F4, F12, vb.) ---
+document.onkeydown = function (e) {
+    // F12 (Geliştirici Araçları), F4, Ctrl+R (Yenileme), Ctrl+W (Kapatma) engelleme girişimi
+    if (e.keyCode == 123 || (e.ctrlKey && (e.keyCode == 82 || e.keyCode == 87 || e.keyCode == 85))) {
+        alert("ZORT! Bu tuşlar burada çalışmaz!");
+        return false;
+    }
+    // Alt + F4'ü tarayıcı tam engelleyemez ama biz uyaralım
+    if (e.altKey && e.keyCode == 115) {
+        alert("Kaçmaya çalışma!");
+        return false;
+    }
+};
 
-// Başlangıçta 6 tane pencere fırlat
-for(let i=0; i<6; i++) {
-    setTimeout(spawnWindow, i * 200);
-}
-</script>
+// --- 3. SEKME KAPATMAYI ZORLAŞTIRMA ---
+window.onbeforeunload = function() {
+    return "Zortmen sülalesinden izinsiz ayrılamazsın! Emin misin?";
+};
 
-</body>
-</html>
+// --- 4. SAĞ TIK ENGELLEME (İncele demesinler) ---
+document.addEventListener('contextmenu', event => event.preventDefault());
