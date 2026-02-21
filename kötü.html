@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>ZORT TEHLİKESİ!</title>
+    <style>
+        body { background: black; color: white; text-align: center; font-family: 'Courier New', Courier, monospace; overflow: hidden; }
+        .warning { color: red; font-size: 50px; margin-top: 20%; animation: blink 0.2s infinite; }
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0; } 100% { opacity: 1; } }
+        button { padding: 20px; font-size: 30px; cursor: pointer; background: red; color: white; border: none; }
+    </style>
+</head>
+<body>
+
+    <div class="warning">DİKKAT! SİSTEM ZORTLADI!</div>
+    <p>Kurtulmak için butona bas (eğer basabilirsen...)</p>
+    
+    <button onclick="baslat()">SİSTEMİ KURTAR</button>
+
+    <script>
+        function baslat() {
+            // "You are an idiot" döngüsü başlasın
+            for(let i = 0; i < 10; i++) {
+                acYeniPencere();
+            }
+        }
+
+        function acYeniPencere() {
+            // Rastgele boyut ve konum
+            let w = 400;
+            let h = 300;
+            let x = Math.random() * (window.screen.width - w);
+            let y = Math.random() * (window.screen.height - h);
+            
+            // Yeni pencereyi aç
+            let win = window.open("", "_blank", `width=${w},height=${h},left=${x},top=${y}`);
+            
+            if (win) {
+                win.document.write(`
+                    <body style="background:yellow; text-align:center; font-weight:bold; overflow:hidden;">
+                        <h1 style="font-size:40px;">SEN APTALSIN!KARA LİSTE EŞŞEĞİ!SENİ ZORTLASINLAR</h1>
+                        <img src="https://uploads.onecompiler.io/446ptsdzc/446ptk3qx/zortmen.png" width="100">
+                        <script>
+                            // Kapandığında kendini tekrar açan sistem
+                            window.onbeforeunload = function() {
+                                window.opener.acYeniPencere();
+                            };
+                            
+                            // Ekranda zıplama hareketi
+                            let dx = 10, dy = 10;
+                            setInterval(() => {
+                                window.moveBy(dx, dy);
+                                if (window.screenX < 0 || window.screenX > screen.width - 400) dx = -dx;
+                                if (window.screenY < 0 || window.screenY > screen.height - 300) dy = -dy;
+                            }, 50);
+                        <\/script>
+                    </body>
+                `);
+            }
+        }
+    </script>
+</body>
+</html>
