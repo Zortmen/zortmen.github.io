@@ -40,13 +40,53 @@
     </style>
 </head>
 <body>
+<script>
+  const btn = document.getElementById("btn");
+
+  function teleport() {
+    const x = Math.random() * (window.innerWidth - btn.offsetWidth);
+    const y = Math.random() * (window.innerHeight - btn.offsetHeight);
+    btn.style.left = x + "px";
+    btn.style.top = y + "px";
+  }
+
+  teleport();
+
+  // Fare yaklaşınca KAÇ
+  document.addEventListener("mousemove", (e) => {
+    const rect = btn.getBoundingClientRect();
+    const bx = rect.left + rect.width / 2;
+    const by = rect.top + rect.height / 2;
+
+    const dx = e.clientX - bx;
+    const dy = e.clientY - by;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+    if (distance < 200) {
+      teleport();
+    }
+  });
+
+  // Tıklamaya karşı HİLE
+  btn.addEventListener("mousedown", (e) => {
+    e.preventDefault();
+    teleport();
+  });
+
+  // Üstüne gelince bile kaçar
+  btn.addEventListener("mouseenter", teleport);
+
+  // Mobil / dokunmatik için
+  btn.addEventListener("touchstart", teleport);
+
+</script>
 
     <div id="warning-text">KARA LİSTEDESİN! <br> FPS: <span id="fps-counter">8</span></div>
     <div id="lag-container"></div>
     
     <p>Benden özür dilemezsen bu tarayıcı hiçbir yere gidemez.</p>
     <center>
-        <button onclick="acceptApology()">ÖZÜR DİLERİM</button>
+        <button id="btn" onclick="acceptApology()">ÖZÜR DİLERİM</button>
     </center>
 
     <script>
@@ -99,9 +139,9 @@
 
         function acceptApology() {
             isPunishing = false;
-            document.body.innerHTML = "<h1 style='color:lime'>TAMAM ZORTMEN, AFFEDİLDİN. SİSTEM ÇÖZÜLÜYOR...</h1>";
+            document.body.innerHTML = "<h1 style='color:lime'>TAMAM, AFFEDİLDİN. SİSTEM ÇÖZÜLÜYOR...</h1>";
             setTimeout(() => {
-                location.reload(); 
+                window.location("https://zortmen.github.io") 
             }, 2000);
         }
 
