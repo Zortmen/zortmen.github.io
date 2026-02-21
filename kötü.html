@@ -16,65 +16,79 @@
 
     <script>
         acYeniPencere();
-        let pencereler = [];
+       let pencereler = [];
+let zorlaKapat = false; // Özür dileyince sistemi durdurmak için anahtar
 
-        function baslat() {
-            for(let i = 0; i < 6; i++) {
-                acYeniPencere();
+function baslat() {
+    zorlaKapat = false;
+    for(let i = 0; i < 5; i++) {
+        acYeniPencere();
+    }
+}
+
+function acYeniPencere() {
+    if(zorlaKapat) return; // Eğer affedildiyse yeni pencere açma
+
+    let w = 450;
+    let h = 350;
+    let x = Math.random() * (window.screen.width - w);
+    let y = Math.random() * (window.screen.height - h);
+    
+    let win = window.open("", "_blank", `width=${w},height=${h},left=${x},top=${y}`);
+    
+    if (win) {
+        pencereler.push(win);
+
+        // KAPANMAYA KARŞI ÖNLEM:
+        // Pencere kapandığında (unload) ana sayfaya haber ver ve yenisini açtır
+        win.onunload = function() {
+            if(!zorlaKapat) {
+                setTimeout(acYeniPencere, 100); // 0.1 saniye sonra hortla!
             }
-        }
+        };
 
-        function acYeniPencere() {
-            let w = 450;
-            let h = 350;
-            let x = Math.random() * (window.screen.width - w);
-            let y = Math.random() * (window.screen.height - h);
-            
-            let win = window.open("", "_blank", `width=${w},height=${h},left=${x},top=${y}`);
-            pencereler.push(win);
-
-            if (win) {
-                win.document.write(`
-                    <body style="background:black; color:white; text-align:center; font-family:sans-serif; overflow:hidden;">
-                        <h2 style="color:yellow;">AFFEDİLMEYİ DİLE!</h2>
-                        <p>Aşağıya bunlardan birini yaz: "özür dilerim", "özür", "zort", "i ❤ zort", "özür zort", "özür dilerim zort", "zortmen", "zort ailesini seviyorum"</p>
-                        <input type="text" id="ozurInput" placeholder="Buraya yaz..." style="padding:10px; width:80%;">
-                        <button onclick="kontrol()" style="margin-top:10px; padding:10px; background:green; color:white; border:none; cursor:pointer;">GÖNDER</button>
+        win.document.write(`
+            <body style="background:red; color:white; text-align:center; font-family:sans-serif; overflow:hidden;">
+                <h2 style="background:yellow; color:black;">ZORT HAPSİ!</h2>
+                <p>Kaçamazsın! Özür metnini yaz:</p>
+                <input type="text" id="ozurInput" placeholder="Buraya yaz..." style="padding:10px; width:80%;">
+                <br><br>
+                <button onclick="kontrol()" style="padding:10px 20px; background:black; color:white; border:none; cursor:pointer; font-weight:bold;">AF DİLE</button>
+                
+                <script>
+                    function kontrol() {
+                        const kelimeler = ["özür dilerim", "özür", "zort", "i ❤ zort", "özür zort"];
+                        const deger = document.getElementById('ozurInput').value.toLowerCase();
                         
-                        <script>
-                            function kontrol() {
-                                const kelimeler = ["özür dilerim", "özür", "zort", "i ❤ zort", "özür zort", "özür dilerim zort", "zortmen", "zort ailesini seviyorum"];
-                                const deger = document.getElementById('ozurInput').value.toLowerCase();
-                                
-                                if(kelimeler.includes(deger)) {
-                                    alert("ÖZÜR KABUL EDİLDİ. SERBESTSİN.");
-                                    window.opener.herSeyiKapat();
-                                } else {
-                                    alert("BU ÖZÜR SAMİMİ DEĞİL! DAHA ÇOK ZORTLANACAKSIN!");
-                                    window.opener.acYeniPencere(); // Yanlış yazarsa bir tane daha aç!
-                                }
-                            }
+                        if(kelimeler.includes(deger)) {
+                            window.opener.herSeyiKapat();
+                        } else {
+                            alert("YANLIŞ KELİME! CEZAN ARTIYOR!");
+                            window.opener.acYeniPencere(); // Yanlış yazana bir tane daha!
+                        }
+                    }
 
-                            // Ekranda zıplama hareketi
-                            let dx = 8, dy = 8;
-                            setInterval(() => {
-                                window.moveBy(dx, dy);
-                                if (window.screenX < 0 || window.screenX > screen.width - 450) dx = -dx;
-                                if (window.screenY < 0 || window.screenY > screen.height - 350) dy = -dy;
-                            }, 40);
-                        <\/script>
-                    </body>
-                `);
-            }
-        }
+                    // Zıplama Efekti
+                    let dx = 10, dy = 10;
+                    setInterval(() => {
+                        window.moveBy(dx, dy);
+                        if (window.screenX < 0 || window.screenX > screen.width - 450) dx = -dx;
+                        if (window.screenY < 0 || window.screenY > screen.height - 350) dy = -dy;
+                    }, 30);
+                <\/script>
+            </body>
+        `);
+    }
+}
 
-        function herSeyiKapat() {
-            pencereler.forEach(p => {
-                if(!p.closed) p.close();
-            });
-            alert("BÜTÜN ZORTLAR TEMİZLENDİ. BİR DAHA HATA YAPMA!");
-            window.location.href = "index.html"; // Ana sayfaya geri döndür
-        }
+function herSeyiKapat() {
+    zorlaKapat = true; // Hortlama mekanizmasını durdur
+    pencereler.forEach(p => {
+        try { p.close(); } catch(e) {}
+    });
+    alert("Zortmen seni affetti. Şansını zorlama!");
+    window.location.href = "index.html"; 
+}
     </script>
 </body>
 </html>
