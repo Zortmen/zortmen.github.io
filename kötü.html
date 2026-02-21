@@ -1,38 +1,142 @@
-// --- 1. TAM EKRAN ZORLAMASI ---
-function tamEkranYap() {
-    let elem = document.documentElement;
-    if (elem.requestFullscreen) {
-        elem.requestFullscreen();
-    } else if (elem.mozRequestFullScreen) { /* Firefox */
-        elem.mozRequestFullScreen();
-    } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
-        elem.webkitRequestFullscreen();
-    } else if (elem.msRequestFullscreen) { /* IE/Edge */
-        elem.msRequestFullscreen();
-    }
-}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kötüsün.</title>
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #ff0000;
+            font-family: 'Courier New', Courier, monospace;
+            overflow: hidden; /* Taşmaları engellemek için */
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-// Kullanıcı sayfada herhangi bir yere tıkladığı an tam ekran olur
-document.addEventListener("click", tamEkranYap);
+        /* Pop-up Tasarımı */
+        .fake-popup {
+            position: fixed;
+            width: 280px;
+            background: #ffffff;
+            border: 4px solid #ff0000;
+            box-shadow: 10px 10px 0px #550000;
+            z-index: 1000;
+            padding: 0;
+            user-select: none;
+        }
 
-// --- 2. TUŞ ENGELLEME (F4, F12, vb.) ---
-document.onkeydown = function (e) {
-    // F12 (Geliştirici Araçları), F4, Ctrl+R (Yenileme), Ctrl+W (Kapatma) engelleme girişimi
-    if (e.keyCode == 123 || (e.ctrlKey && (e.keyCode == 82 || e.keyCode == 87 || e.keyCode == 85))) {
-        alert("ZORT! Bu tuşlar burada çalışmaz!");
-        return false;
-    }
-    // Alt + F4'ü tarayıcı tam engelleyemez ama biz uyaralım
-    if (e.altKey && e.keyCode == 115) {
-        alert("Kaçmaya çalışma!");
-        return false;
-    }
-};
+        .popup-header {
+            background: #ff0000;
+            color: white;
+            padding: 5px 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            cursor: move;
+        }
 
-// --- 3. SEKME KAPATMAYI ZORLAŞTIRMA ---
-window.onbeforeunload = function() {
-    return "Zortmen sülalesinden izinsiz ayrılamazsın! Emin misin?";
-};
+        .close-btn {
+            background: #000;
+            color: #fff;
+            border: 1px solid #fff;
+            padding: 0 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
 
-// --- 4. SAĞ TIK ENGELLEME (İncele demesinler) ---
-document.addEventListener('contextmenu', event => event.preventDefault());
+        .popup-body {
+            padding: 20px;
+            color: #000;
+            text-align: center;
+        }
+
+        .apology-btn {
+            background-color: #28a745;
+            color: white;
+            border: 2px solid #1e7e34;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .apology-btn:hover {
+            background-color: #218838;
+        }
+
+        h1 {
+            font-size: 3rem;
+            text-shadow: 2px 2px #000;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>KARA LİSTE CEZASI!</h1>
+
+    <div id="popup-container"></div>
+
+    <script>
+        let popupCount = 0;
+        const container = document.getElementById('popup-container');
+
+        // Pop-up oluşturma fonksiyonu
+        function createPopup() {
+            popupCount++;
+            const id = 'popup-' + popupCount;
+            
+            const popup = document.createElement('div');
+            popup.id = id;
+            popup.className = 'fake-popup';
+            
+            // Ekranın rastgele yerlerinde çıksın (Kasma hissi için)
+            const x = Math.random() * (window.innerWidth - 300);
+            const y = Math.random() * (window.innerHeight - 200);
+            popup.style.left = x + 'px';
+            popup.style.top = y + 'px';
+
+            popup.innerHTML = `
+                <div class="popup-header">
+                    <span>SİSTEM HATASI!</span>
+                    <button class="close-btn" onclick="multiplyPopup('${id}')">X</button>
+                </div>
+                <div class="popup-body">
+                    <p>Benden hemen özür dilemelisin!</p>
+                    <button class="apology-btn" onclick="acceptApology()">Özür dilerim</button>
+                </div>
+            `;
+
+            container.appendChild(popup);
+        }
+
+        // Kapatmaya basınca 2 yeni pop-up açar
+        function multiplyPopup(id) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.remove();
+                // Bir gidiyor, iki geliyor!
+                setTimeout(createPopup, 100);
+                setTimeout(createPopup, 200);
+            }
+        }
+
+        // Özür dilerse her şeyi temizler
+        function acceptApology() {
+            alert("Tamam, bu seferlik seni affediyorum...");
+            container.innerHTML = '';
+        }
+
+        // Sayfa yüklendiğinde "kasmaya" başlaması için 10 tane açar
+        window.onload = function() {
+            for(let i = 0; i < 10; i++) {
+                setTimeout(createPopup, i * 150);
+            }
+        };
+    </script>
+
+</body>
+</html>
