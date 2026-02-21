@@ -3,159 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KARA LİSTE - ERİŞİM ENGELİ</title>
+    <title>Zortmen - KARA LİSTE</title>
     <style>
         body {
-            background-color: #050000;
+            background-color: #0a0000;
             color: #ff0000;
-            font-family: 'Comic Sans MS', cursive; /* Sinir bozucu olması için */
-            text-align: center;
-            overflow: hidden;
+            font-family: 'Courier New', Courier, monospace;
             margin: 0;
             height: 100vh;
+            overflow: hidden;
             display: flex;
             flex-direction: column;
             justify-content: center;
+            align-items: center;
         }
-        #warning-text {
-            font-size: 50px;
-            font-weight: bold;
-            text-shadow: 0 0 20px red;
+
+        #status {
+            font-size: 40px;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px #550000;
         }
-        .lag-box {
+
+        /* Kaçan Buton Tasarımı */
+        #escape-btn {
             position: absolute;
-            width: 50px;
-            height: 50px;
-            border: 1px solid rgba(255,0,0,0.2);
-        }
-        button {
-            padding: 15px;
-            background: black;
-            color: red;
-            border: 2px solid red;
-            cursor: pointer;
+            padding: 15px 30px;
+            background: #222;
+            color: #00ff00;
+            border: 2px solid #00ff00;
             font-weight: bold;
-            z-index: 9999;
+            cursor: pointer;
+            transition: all 0.1s ease; /* Hafif bir akıcılık ama basması zor */
+            z-index: 1000;
+        }
+
+        .lag-layer {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 1;
         }
     </style>
 </head>
 <body>
-<script>
-  const btn = document.getElementById("btn");
 
-  function teleport() {
-    const x = Math.random() * (window.innerWidth - btn.offsetWidth);
-    const y = Math.random() * (window.innerHeight - btn.offsetHeight);
-    btn.style.left = x + "px";
-    btn.style.top = y + "px";
-  }
+    <div id="status">KARA LİSTE: ERİŞİM YOK</div>
+    <p>Affedilmek için butonu yakala!</p>
 
-  teleport();
-
-  // Fare yaklaşınca KAÇ
-  document.addEventListener("mousemove", (e) => {
-    const rect = btn.getBoundingClientRect();
-    const bx = rect.left + rect.width / 2;
-    const by = rect.top + rect.height / 2;
-
-    const dx = e.clientX - bx;
-    const dy = e.clientY - by;
-    const distance = Math.sqrt(dx * dx + dy * dy);
-
-    if (distance < 200) {
-      teleport();
-    }
-  });
-
-  // Tıklamaya karşı HİLE
-  btn.addEventListener("mousedown", (e) => {
-    e.preventDefault();
-    teleport();
-  });
-
-  // Üstüne gelince bile kaçar
-  btn.addEventListener("mouseenter", teleport);
-
-  // Mobil / dokunmatik için
-  btn.addEventListener("touchstart", teleport);
-
-</script>
-
-    <div id="warning-text">KARA LİSTEDESİN! <br> FPS: <span id="fps-counter">8</span></div>
-    <div id="lag-container"></div>
-    
-    <p>Benden özür dilemezsen bu tarayıcı hiçbir yere gidemez.</p>
-    <center>
-        <button id="btn" onclick="acceptApology()">ÖZÜR DİLERİM</button>
-    </center>
+    <button id="escape-btn">ÖZÜR DİLERİM</button>
 
     <script>
         let isPunishing = true;
-        const fpsDisplay = document.getElementById('fps-counter');
-        const container = document.getElementById('lag-container');
+        const btn = document.getElementById('escape-btn');
 
-        // 1. ADIM: DOM'u binlerce anlamsız kutuyla doldur (GPU'yu yorar)
-        for(let i=0; i<800; i++) {
-            let div = document.createElement('div');
-            div.className = 'lag-box';
-            container.appendChild(div);
+        // --- 1. FPS DÜŞÜRÜCÜ (8 FPS HEDEFİ) ---
+        function applyLag() {
+            if (!isPunishing) return;
+            const start = performance.now();
+            while (performance.now() - start < 110) { 
+                // CPU'yu 110ms kilitliyoruz -> ~8-9 FPS
+                Math.sqrt(Math.random() * 999);
+            }
+            requestAnimationFrame(applyLag);
         }
 
-        // 2. ADIM: FPS'i 8'e ÇAKAN MEKANİZMA
-        function killPerformance() {
+        // --- 2. KAÇAN BUTON MEKANİZMASI ---
+        document.addEventListener('mousemove', (e) => {
             if (!isPunishing) return;
 
-            const startTime = performance.now();
-            
-            // Hardcore CPU Bloklama: 
-            // Her kare çizilmeden önce tarayıcıyı yaklaşık 110ms kilitliyoruz.
-            // 1000ms / 125ms ≈ 8 FPS
-            while (performance.now() - startTime < 115) {
-                // Tarayıcıyı meşgul et
-                Math.random() * Math.random();
+            const btnRect = btn.getBoundingClientRect();
+            const btnCenterX = btnRect.left + btnRect.width / 2;
+            const btnCenterY = btnRect.top + btnRect.height / 2;
+
+            // Fare ile buton merkezi arasındaki mesafe
+            const distance = Math.hypot(e.clientX - btnCenterX, e.clientY - btnCenterY);
+
+            // Eğer 10px (veya butonun yakınına) yaklaşırsak kaç
+            if (distance < 80) { // 10px çok dar olduğu için 80px civarı etkileşime sokup kaçırıyoruz
+                const newX = Math.random() * (window.innerWidth - btnRect.width);
+                const newY = Math.random() * (window.innerHeight - btnRect.height);
+                
+                btn.style.left = newX + 'px';
+                btn.style.top = newY + 'px';
             }
+        });
 
-            // DOM Reflow zorla: Tüm kutuların yerini değiştir
-            const boxes = document.getElementsByClassName('lag-box');
-            for (let box of boxes) {
-                box.style.transform = `translate(${Math.random() * 5}px, ${Math.random() * 5}px)`;
-            }
-
-            requestAnimationFrame(killPerformance);
-        }
-
-        // 3. ADIM: Sahte Pop-up Yağmuru (X'e basınca 2 tane)
-        function spawnAnnoyingPopup() {
-            if(!isPunishing) return;
-            alert("KARA LİSTE CEZASI: Tarayıcın şu an benim kontrolümde.");
-            if(confirm("Pes ediyor musun?")) {
-                alert("O zaman butona bas!");
-            } else {
-                // Reddederse 2 tane daha açar (Zortmen usulü)
-                setTimeout(spawnAnnoyingPopup, 100);
-                setTimeout(spawnAnnoyingPopup, 300);
-            }
-        }
-
-        function acceptApology() {
+        // --- 3. KURTULUŞ ---
+        btn.addEventListener('click', () => {
             isPunishing = false;
-            document.body.innerHTML = "<h1 style='color:lime'>TAMAM, AFFEDİLDİN. SİSTEM ÇÖZÜLÜYOR...</h1>";
-            setTimeout(() => {
-                window.location("https://zortmen.github.io") 
-            }, 2000);
-        }
+            alert("Affedildin Zortmen. Ana sayfaya yönlendiriliyorsun...");
+            window.location.href = "https://zortmen.github.io"; 
+        });
 
         // Başlat
         window.onload = () => {
-            killPerformance();
-            setTimeout(spawnAnnoyingPopup, 2000);
+            // Butonu rastgele bir yere koy
+            btn.style.left = '50%';
+            btn.style.top = '70%';
+            applyLag();
         };
-
-        // FPS Sayacını sadece görsel olarak düşük tutalım (Psikolojik baskı)
-        setInterval(() => {
-            if(isPunishing) fpsDisplay.innerText = Math.floor(Math.random() * 3) + 6; 
-        }, 1000);
-
     </script>
 </body>
 </html>
