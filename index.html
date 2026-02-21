@@ -749,10 +749,8 @@ function zortIsmiYap() {
     const ad = inputAd.toLowerCase();
     const resultEl = document.getElementById("zortResult");
     
-    // --- LİSTELER ---
-    const karaListe = ["antizortmen", "antizort", "pırt", "black friday", "berat", "yavuz selim", "ahmet yusuf"]; // Buraya istemediğin adları ekle
-    const iyiListe = ["ibrahim", "ali", "eh", "ehzortus", "şanlı zort"]; // Buraya sevdiğin adları ekle
-    
+    const karaListe = ["antizortmen", "antizort", "pırt", "black friday", "berat", "yavuz selim", "ahmet yusuf"];
+    const iyiListe = ["ibrahim", "ali", "eh", "ehzortus", "şanlı zort"];
     const unvanlar = ["Zort-ül Ehzort", "Kadim Pırtmaster", "Sıvımen Veliahdı", "Tost Savaşçısı", "Antipırt Avcısı", "Zortpedia Başyazarı","Zort-Women"];
 
     if(!ad) {
@@ -761,26 +759,41 @@ function zortIsmiYap() {
         return;
     }
 
-    // 1. KISIM: Kara Liste Kontrolü (Haddini Bildir)
+    // --- KARA LİSTE CEZALANDIRMA SİSTEMİ ---
     if (karaListe.includes(ad)) {
-        resultEl.style.color = "#ff3333"; // Kırmızı
-        resultEl.textContent = `HADDİNİ BİL ${inputAd.toUpperCase()}! Senin gibi birinin bu sülalede yeri yok! Zortlanarak uzaklaş buradan!`;
-        document.body.style.animation = "shake 0.5s"; // Ekranı salla (isteğe bağlı)
-        setTimeout(() => document.body.style.animation = "", 500);
-        document.body.style.filter = "invert(1) hue-rotate(180deg)";
+        resultEl.style.color = "#ff3333";
+        let saniye = 20;
+        
+        // Ekranı karart ve salla
+        document.body.style.filter = "invert(1) grayscale(1) contrast(2)";
+        
+        const cezaSayacı = setInterval(() => {
+            resultEl.innerHTML = `HADDİNİ BİL ${inputAd.toUpperCase()}!<br> 
+            <span style="font-size:24px; background:red; color:white; padding:5px;">${saniye}</span> saniye içinde burayı terk et yoksa sonun kötü olacak!`;
+            
+            saniye--;
+
+            if (saniye < 0) {
+                clearInterval(cezaSayacı);
+                resultEl.innerHTML = `NE BEKLİYORDUN!AL SANA VİRÜS! HAHAHAHA 😈`;
+            
+                window.location.href = "https://zortmen.github.io/kötü.html";
+            }
+        }, 1000);
+
         return;
     }
 
-    // 2. KISIM: İyi Liste Kontrolü (Övgü Yağdır)
+    // --- İYİ LİSTE ---
     if (iyiListe.includes(ad)) {
-        resultEl.style.color = "#7cff00"; // Neon Yeşil
+        resultEl.style.color = "#7cff00";
         resultEl.textContent = `Oooo, büyük usta ${inputAd.toUpperCase()} gelmiş! Zort dünyasının gerçek efsanesi, sülalemizin onurusun!`;
         return;
     }
 
-    // 3. KISIM: Normal Zortmen Adayları
+    // --- NORMAL ADAYLAR ---
     const rastgele = unvanlar[Math.floor(Math.random() * unvanlar.length)];
-    resultEl.style.color = "var(--neon2)"; // Mavi/Neon
+    resultEl.style.color = "var(--neon2)";
     resultEl.textContent = `Hoş geldin, ${rastgele} ${inputAd}! Kaydın ZortCloud'a işlendi.`;
 }
   const chars = "!<>-_\\/[]{}—=+*^?#________";
@@ -824,8 +837,9 @@ document.addEventListener("keydown", (e) => {
 
 
 
-</body></html>
+
 
 </body></html>
+
 
 
