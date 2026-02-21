@@ -2,93 +2,203 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>ZORT CEZA MERKEZİ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZORT HAPSİ - KAÇIŞ YOK</title>
     <style>
-        body { background: #000; color: #ff3333; text-align: center; font-family: sans-serif; }
-        .warning { font-size: 40px; margin-top: 100px; animation: blink 0.3s infinite; }
-        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0; } }
+        :root {
+            --neon-red: #ff3333;
+            --neon-green: #7cff00;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            font-family: 'Courier New', Courier, monospace;
+            overflow: hidden; /* Sayfa kaydırılamaz */
+        }
+
+        #zort-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, #1a0000 0%, #000 100%);
+            z-index: 99999;
+        }
+
+        .header-warning {
+            color: var(--neon-red);
+            text-align: center;
+            font-size: 2.5rem;
+            text-shadow: 0 0 20px red;
+            margin-top: 20px;
+            animation: pulse 0.5s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from { transform: scale(1); opacity: 1; }
+            to { transform: scale(1.05); opacity: 0.7; }
+        }
+
+        .fake-window {
+            position: absolute;
+            width: 320px;
+            background: #c0c0c0; /* Klasik eski Windows gri rengi */
+            border: 3px solid #fff;
+            border-right-color: #808080;
+            border-bottom-color: #808080;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.5);
+            padding: 2px;
+            user-select: none;
+        }
+
+        .window-title {
+            background: linear-gradient(90deg, #000080, #1084d0);
+            color: white;
+            padding: 3px 10px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+        }
+
+        .window-body {
+            padding: 15px;
+            text-align: center;
+            color: #000;
+        }
+
+        .window-body input {
+            width: 90%;
+            margin-bottom: 10px;
+            padding: 5px;
+            border: 2px inset #eee;
+        }
+
+        .btn {
+            padding: 5px 15px;
+            cursor: pointer;
+            font-weight: bold;
+            border: 2px outset #eee;
+        }
+
+        .btn-close {
+            background: #c0c0c0;
+            color: black;
+            font-size: 10px;
+            border: 1px outset #fff;
+            width: 16px;
+            height: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .zort-logo {
+            width: 50px;
+            height: 50px;
+            margin-bottom: 10px;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
-    <div class="warning">SİSTEM ZORTLANDI!</div>
-    <p>Kara listede olduğun için sürgün edildin.</p>
-    <button onclick="baslat()" style="padding:15px; background:red; color:white; border:none; cursor:pointer;">KURTULMAYI DENE</button>
 
-    <script>
-        acYeniPencere();
-       let pencereler = [];
-let zorlaKapat = false; // Özür dileyince sistemi durdurmak için anahtar
+<div id="zort-overlay">
+    <h1 class="header-warning">SİSTEM ZORTLANDI</h1>
+    <p style="color: white; text-align: center;">Kara listedesin. Özür dilemeden gidemezsin!</p>
+</div>
 
-function baslat() {
-    zorlaKapat = false;
-    for(let i = 0; i < 5; i++) {
-        acYeniPencere();
+<script>
+let windowCount = 0;
+const affetmeKelimeleri = ["özür dilerim", "özür", "zort", "i ❤ zort", "özür zort", "affet beni zortmen"];
+
+// Sahte Pencere Oluşturma Fonksiyonu
+function spawnWindow() {
+    windowCount++;
+    const win = document.createElement("div");
+    win.id = "win-" + windowCount;
+    win.className = "fake-window";
+    
+    // Rastgele Konum
+    const x = Math.random() * (window.innerWidth - 340);
+    const y = Math.random() * (window.innerHeight - 200);
+    win.style.left = x + "px";
+    win.style.top = y + "px";
+    win.style.zIndex = 1000 + windowCount;
+
+    win.innerHTML = `
+        <div class="window-title">
+            <span>ZortError.exe</span>
+            <div class="btn-close" onclick="punish()">X</div>
+        </div>
+        <div class="window-body">
+            <img src="https://uploads.onecompiler.io/446ptsdzc/446ptk3qx/zortmen.png" class="zort-logo">
+            <p><b>AF DİLEME PANELİ</b></p>
+            <input type="text" id="input-${windowCount}" placeholder="Özür dilerim yaz...">
+            <br>
+            <button class="btn" onclick="check(${windowCount})">GÖNDER</button>
+            <button class="btn" onclick="punish()">KAPAT</button>
+        </div>
+    `;
+
+    document.getElementById("zort-overlay").appendChild(win);
+    
+    // Pencereleri otomatik zıplatma (opsiyonel)
+    moveRandomly(win);
+}
+
+// Yanlış yapanı cezalandır (2 yeni pencere aç)
+function punish() {
+    alert("KAPATAMAZSIN! Zortmen kuralları geçerli.");
+    spawnWindow();
+    spawnWindow();
+}
+
+// Özür kontrolü
+function check(id) {
+    const val = document.getElementById("input-" + id).value.toLowerCase().trim();
+    if (affetmeKelimeleri.includes(val)) {
+        alert("Zortmen yüceliğini gösterdi ve seni affetti. Şimdi git...");
+        window.location.href = "index.html"; // Ana sayfaya gönder
+    } else {
+        alert("BU ÖZÜR YETERLİ DEĞİL!");
+        spawnWindow();
     }
 }
 
-function acYeniPencere() {
-    if(zorlaKapat) return; // Eğer affedildiyse yeni pencere açma
+// Pencerelerin hafifçe titremesi/hareket etmesi
+function moveRandomly(el) {
+    let x = parseInt(el.style.left);
+    let y = parseInt(el.style.top);
+    let dx = (Math.random() - 0.5) * 10;
+    let dy = (Math.random() - 0.5) * 10;
 
-    let w = 450;
-    let h = 350;
-    let x = Math.random() * (window.screen.width - w);
-    let y = Math.random() * (window.screen.height - h);
-    
-    let win = window.open("", "_blank", `width=${w},height=${h},left=${x},top=${y}`);
-    
-    if (win) {
-        pencereler.push(win);
-
-        // KAPANMAYA KARŞI ÖNLEM:
-        // Pencere kapandığında (unload) ana sayfaya haber ver ve yenisini açtır
-        win.onunload = function() {
-            if(!zorlaKapat) {
-                setTimeout(acYeniPencere, 100); // 0.1 saniye sonra hortla!
-            }
-        };
-
-        win.document.write(`
-            <body style="background:red; color:white; text-align:center; font-family:sans-serif; overflow:hidden;">
-                <h2 style="background:yellow; color:black;">ZORT HAPSİ!</h2>
-                <p>Kaçamazsın! Özür metnini yaz:</p>
-                <input type="text" id="ozurInput" placeholder="Buraya yaz..." style="padding:10px; width:80%;">
-                <br><br>
-                <button onclick="kontrol()" style="padding:10px 20px; background:black; color:white; border:none; cursor:pointer; font-weight:bold;">AF DİLE</button>
-                
-                <script>
-                    function kontrol() {
-                        const kelimeler = ["özür dilerim", "özür", "zort", "i ❤ zort", "özür zort"];
-                        const deger = document.getElementById('ozurInput').value.toLowerCase();
-                        
-                        if(kelimeler.includes(deger)) {
-                            window.opener.herSeyiKapat();
-                        } else {
-                            alert("YANLIŞ KELİME! CEZAN ARTIYOR!");
-                            window.opener.acYeniPencere(); // Yanlış yazana bir tane daha!
-                        }
-                    }
-
-                    // Zıplama Efekti
-                    let dx = 10, dy = 10;
-                    setInterval(() => {
-                        window.moveBy(dx, dy);
-                        if (window.screenX < 0 || window.screenX > screen.width - 450) dx = -dx;
-                        if (window.screenY < 0 || window.screenY > screen.height - 350) dy = -dy;
-                    }, 30);
-                <\/script>
-            </body>
-        `);
-    }
+    setInterval(() => {
+        x += dx;
+        y += dy;
+        if (x < 0 || x > window.innerWidth - 320) dx = -dx;
+        if (y < 0 || y > window.innerHeight - 200) dy = -dy;
+        el.style.left = x + "px";
+        el.style.top = y + "px";
+    }, 50);
 }
 
-function herSeyiKapat() {
-    zorlaKapat = true; // Hortlama mekanizmasını durdur
-    pencereler.forEach(p => {
-        try { p.close(); } catch(e) {}
-    });
-    alert("Zortmen seni affetti. Şansını zorlama!");
-    window.location.href = "index.html"; 
+// Başlangıçta 6 tane pencere fırlat
+for(let i=0; i<6; i++) {
+    setTimeout(spawnWindow, i * 200);
 }
-    </script>
+</script>
+
 </body>
 </html>
