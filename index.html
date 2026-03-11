@@ -319,7 +319,7 @@
       <a href="#zortgunlugu">Günlük</a>
       <a href="#zortbilim">Bilim</a>
       <a href="#savas-tablosu">Savaşlar</a>
-      <a href="#isim-olusturucu">Zort Ünvanın</a>
+      <a href="#uye-ol">Üye Ol</a>
       <a href="#zort-enerji">Zort Enerjisi</a>
     </div>
   </div>
@@ -822,13 +822,24 @@ window.addEventListener('load', adjustNav);
   updateEnergy();
 </script>
 <br>
-<section id="isim-olusturucu">
-  <h2>Sülaleye Katıl</h2>
-  <div class="card">
-    <p>Gerçek adını gir ve Zortmen unvanını öğren:</p>
-    <input type="text" id="userName" placeholder="Adın nedir?.." style="padding:10px; border-radius:8px; border:none; width:200px; background:#1a1b3a; color:white; border:1px solid var(--neon2);">
-    <button onclick="zortIsmiYap()" style="background:var(--neon); color:black; padding:10px 20px; border-radius:8px; cursor:pointer; font-weight:bold; border:none; margin-left:10px;">UNVAN AL</button>
-    <h3 id="zortResult" style="margin-top:20px; min-height: 1.2em;"></h3>
+<section id="uye-ol">
+  <h2>Sülaleye Üye Ol</h2>
+  <div class="card" id="uye-formu">
+    <div id="uye-adim-1">
+      <p>Gerçek adını gir ve zort testini başlat:</p>
+      <input type="text" id="userName" placeholder="Adın nedir?.." style="padding:10px; border-radius:8px; border:none; width:200px; background:#1a1b3a; color:white; border:1px solid var(--neon2);">
+      <button onclick="testiBaslat()" style="background:var(--neon); color:black; padding:10px 20px; border-radius:8px; cursor:pointer; font-weight:bold; border:none; margin-left:10px;">TESTE GİR</button>
+    </div>
+
+    <div id="uye-adim-2" style="display:none; text-align:left;">
+      <h3 id="soru-metni" style="color:var(--neon2); margin-bottom:15px;"></h3>
+      <div id="test-secenekleri" style="display:flex; flex-direction:column; gap:12px;"></div>
+    </div>
+
+    <div id="uye-adim-sonuc" style="display:none;">
+      <h3 id="sonuc-mesaji"></h3>
+      <p id="bildirim-durumu" style="font-size:13px; opacity:0.7; margin-top:10px;"></p>
+    </div>
   </div>
 </section>
 <section id="sonsuz">
@@ -853,88 +864,22 @@ window.addEventListener('load', adjustNav);
 </footer>
 
 <script>
-function zortIsmiYap() {
-    const inputAd = document.getElementById("userName").value.trim();
-    const ad = inputAd.toLowerCase();
-    const resultEl = document.getElementById("zortResult");
-    
-    const karaListe = ["antizortmen", "antizort", "pırt", "black friday", "berat", "yavuz selim", "ahmet yusuf"];
-    const iyiListe = ["ibrahim", "ali", "eh", "ehzortus", "şanlı zort"];
-    const unvanlar = ["Zort-ül Ehzort", "Kadim Pırtmaster", "Sıvımen Veliahdı", "Tost Savaşçısı", "Antipırt Avcısı", "Zortpedia Başyazarı","Zort-Women"];
+ function uyeYap() {
+    const kullaniciAdi = document.getElementById("isim-alani").value;
 
-    if(!ad) {
-        resultEl.style.color = "orange";
-        resultEl.textContent = "Önce adını yazmalısın evlat!";
-        return;
-    }
-
-    // --- KARA LİSTE CEZALANDIRMA SİSTEMİ ---
-    if (karaListe.includes(ad)) {
-        resultEl.style.color = "#ff3333";
-        let saniye = 20;
-        
-        // Ekranı karart ve salla
-        document.body.style.filter = "invert(1) grayscale(1) contrast(2)";
-        
-        const cezaSayacı = setInterval(() => {
-            resultEl.innerHTML = `HADDİNİ BİL ${inputAd.toUpperCase()}!<br> 
-            <span style="font-size:24px; background:red; color:white; padding:5px;">${saniye}</span> saniye içinde burayı terk et yoksa sonun kötü olacak!`;
-            
-            saniye--;
-
-            if (saniye < 0) {
-                clearInterval(cezaSayacı);
-                resultEl.innerHTML = `NE BEKLİYORDUN!AL SANA VİRÜS! HAHAHAHA 😈`;
-            
-                window.location.href = "https://zortmen.github.io/kötü.html";
-            }
-        }, 1000);
-
-        return;
-    }
-
-    // --- İYİ LİSTE ---
-    if (iyiListe.includes(ad)) {
-        resultEl.style.color = "#7cff00";
-        resultEl.textContent = `Oooo, büyük usta ${inputAd.toUpperCase()} gelmiş! Zort dünyasının gerçek efsanesi, sülalemizin onurusun!`;
-        return;
-    }
-
-    // --- NORMAL ADAYLAR ---
-    const rastgele = unvanlar[Math.floor(Math.random() * unvanlar.length)];
-    resultEl.style.color = "var(--neon2)";
-    resultEl.textContent = `Hoş geldin, ${rastgele} ${inputAd}! Kaydın ZortCloud'a işlendi.`;
+    fetch('https://api.github.com/repos/zortmen/zortmen.github.io/dispatches', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/vnd.github.v3+json'
+        },
+        body: JSON.stringify({
+            event_type: 'yeni_uye_kaydi',
+            client_payload: { isim: kullaniciAdi }
+        })
+    }).then(() => {
+        document.getElementById("sonuc-alani").textContent = "BAŞVURUN GİZLİ HAT ÜZERİNDEN KONSEYE İLETİLDİ!";
+    });
 }
-  const chars = "!<>-_\\/[]{}—=+*^?#________";
-  const elements = document.querySelectorAll(".glitch");
-
-  function glitch(el){
-    const originalLength = el.textContent.length;
-    let out = "";
-    for(let i=0;i<originalLength;i++){
-      out += chars[Math.floor(Math.random()*chars.length)];
-    }
-    el.textContent = out;
-  }
-
-  setInterval(()=>{
-    elements.forEach(glitch);
-  },60);
-  let inputBuffer = "";
-  
-document.addEventListener("keydown", (e) => {
-    inputBuffer += e.key.toLowerCase();
-    if (inputBuffer.length > 10) inputBuffer = inputBuffer.substring(1);
-    
-    if (inputBuffer.includes("zort")) {
-        // Gizli efekt: Ekranı salla ve renkleri ters çevir
-        document.body.style.filter = "invert(1) hue-rotate(180deg)";
-        alert("YAPMA DEMİŞTİM!");
-        setTimeout(() => {
-            document.body.style.filter = "none";
-        }, 10000);
-        inputBuffer = ""; // Tamponu temizle
-    }
-});
 </script>
+
 </body></html>
