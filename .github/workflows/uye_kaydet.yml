@@ -1,4 +1,4 @@
-name: Zortmen Kayıt Sistemi
+name: Zortmen Gizli Kayit Sistemi
 on:
   repository_dispatch:
     types: [yeni_uye_kaydi]
@@ -8,13 +8,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Python ile Dosyayı Güncelle
+        with:
+          token: ${{ secrets.ZORT_TOKEN }} # Kasadaki anahtarı robot kullanıyor
+      
+      - name: Gizli Dosyaya Yaz
         run: |
-          echo "${{ github.event.client_payload.isim }}" >> uyeler.txt
-      - name: Değişiklikleri Kaydet
+          python - <<EOF
+          import datetime
+          isim = "${{ github.event.client_payload.isim }}"
+          tarih = datetime.datetime.now().strftime("%d.%m.%Y %H:%M")
+          
+          # Verileri kimsenin göremeyeceği gizli bir dosyaya ekliyoruz
+          with open("konsey_gizli_liste.txt", "a", encoding="utf-8") as f:
+              f.write(f"[{tarih}] Kayit: {isim}\n")
+          EOF
+      
+      - name: Degisiklikleri Sadece Panele Gonder
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "Zort Bot"
-          git add uyeler.txt
-          git commit -m "Yeni üye: ${{ github.event.client_payload.isim }}"
+          git add konsey_gizli_liste.txt
+          git commit -m "Sisteme yeni bir gizli üye düştü"
           git push
