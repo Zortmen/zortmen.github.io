@@ -7,7 +7,7 @@
   <meta name="description" content="Zortmen nedir? Zortlar kimdir? Zortpedia, anatomi, kronoloji ve 3D zort oyunları.">
 
   <style>
-    :root{
+:root{
       --bg:#07070d;
       --panel:#0f1020;
       --neon:#7cff00;
@@ -31,7 +31,7 @@
     header{
       position:sticky;
       top:0;
-      z-index:10;
+      z-index:100; /* Dropdown'ın üstte kalması için artırıldı */
       display:flex;
       justify-content:space-between;
       align-items:center;
@@ -39,6 +39,7 @@
       background:rgba(7,7,13,.78);
       backdrop-filter:blur(12px);
       border-bottom:1px solid rgba(124,255,0,.25);
+      overflow: visible; /* İçeriğin dışa taşabilmesi için */
     }
 
     header img{
@@ -46,6 +47,23 @@
       filter:
         drop-shadow(0 0 12px var(--neon))
         drop-shadow(0 0 24px rgba(124,255,0,.4));
+      flex-shrink: 0; /* Logonun sıkışmasını engeller */
+    }
+
+    /* Dinamik menü konteynırı */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      flex: 1;
+      overflow: visible;
+    }
+
+    /* Dışarıdaki linklerin kutusu */
+    #main-nav-links {
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
     }
 
     nav a{
@@ -54,6 +72,8 @@
       text-decoration:none;
       font-weight:600;
       position:relative;
+      white-space: nowrap; /* Metnin kırılmasını önler */
+      transition: color .3s;
     }
 
     nav a::after{
@@ -73,16 +93,14 @@
       width:100%;
     }
 
-    .hero{
+     .hero{
       min-height:90vh;
       display:flex;
       flex-direction:column;
       justify-content:center;
       align-items:center;
-      text-align:center;
-      padding:120px 20px;
-    }
-
+     }
+     
     .hero h1{
       font-size:clamp(48px,8vw,72px);
       margin-bottom:20px;
@@ -217,7 +235,6 @@
   outline: none;
 }
 
-/* Dropdown İçeriği (Gizli) */
 .dropdown-content {
   display: none;
   position: absolute;
@@ -232,14 +249,34 @@
 }
 
 /* Dropdown Linkleri */
-.dropdown-content a {
-  color: var(--text);
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-  margin-left: 0; /* Nav'daki margin-left'i sıfırlıyoruz */
-  font-size: 14px;
-  transition: 0.3s;
+.dropdown-content {
+  display: flex; /* İçindekileri esnek yap */
+  flex-direction: column; /* Kesinlikle alt alta diz */
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  background-color: var(--panel);
+  min-width: 220px; /* Genişliği ferahlattık */
+  box-shadow: 0px 8px 16px rgba(0,0,0,0.5);
+  z-index: 100;
+  border: 1px solid var(--neon);
+  border-radius: 12px;
+  top: 100%;
+  right: 0; /* Sağa yasla ki ekrandan taşmasın */
+  backdrop-filter: blur(10px);
+  padding: 10px 0; /* Üstten ve alttan nefes payı */
+  transition: all 0.3s ease;
+  transform: translateY(10px);
+}
+
+/* Fare menüye geçerken arada boşluk kalmaması için "Görünmez Köprü" */
+.dropdown-content::before {
+  content: "";
+  position: absolute;
+  top: -30px; /* Link ile menü arasındaki 30px'lik boşluğu koruma altına alır */
+  left: 0;
+  width: 100%;
+  height: 30px;
 }
 
 /* Link Üzerine Gelince */
@@ -248,9 +285,10 @@
   color: var(--neon);
 }
 
-/* Fareyi "Daha Fazla" üzerine getirince göster */
 .dropdown:hover .dropdown-content {
-  display: block;
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0); /* Süzülerek gelme efekti */
 }
 
 /* Dropdown açıldığında alt çizgi animasyonunu butonda da göster */
@@ -264,22 +302,25 @@
 <body>
 <header>
   <img src="https://uploads.onecompiler.io/446ptsdzc/446ptk3qx/zortmen.png" alt="Zortmen Logo" class="logo">
-<nav>
-  <a href="#nedir">Zort Nedir?</a>
-  <a href="#anatomi">Aile Üyeleri</a>
-  <a href="#kronoloji">Kronoloji</a>
-  <a href="#oyunlar">Oyunlar</a>
+<nav id="zort-nav">
+  <div id="main-nav-links">
+    <a href="#nedir">Zort Nedir?</a>
+    <a href="#anatomi">Aile Üyeleri</a>
+    <a href="#kronoloji">Kronoloji</a>
+    <a href="#oyunlar">Oyunlar</a>
+    <a href="#zortpedia">Zortpedia</a>
+    <a href="#ceviri">Çeviri</a>
+  </div>
   
-  <div class="dropdown">
+  <div class="dropdown" id="more-dropdown">
     <a href="javascript:void(0)" class="dropbtn">Daha Fazla ▾</a>
-    <div class="dropdown-content">
-      <a href="#zortpedia">Zortpedia</a>
-      <a href="#ceviri">Çeviri</a>
+    <div class="dropdown-content" id="dropdown-links">
       <a href="#mini_zort_testi">Test</a>
       <a href="#zortgunlugu">Günlük</a>
       <a href="#zortbilim">Bilim</a>
       <a href="#savas-tablosu">Savaşlar</a>
       <a href="#isim-olusturucu">Zort Ünvanın</a>
+      <a href="#zort-enerji">Zort Enerjisi</a>
     </div>
   </div>
 </nav>
@@ -463,6 +504,39 @@
 </style>
 
 <script>
+  function adjustNav() {
+    const mainNav = document.getElementById('main-nav-links');
+    const dropdownNav = document.getElementById('dropdown-links');
+    const moreBtn = document.getElementById('more-dropdown');
+    const header = document.querySelector('header');
+    const logo = document.querySelector('.logo');
+
+    // Header genişliğinden logo ve buton payını çıkarıyoruz
+    const availableWidth = header.offsetWidth - logo.offsetWidth - 150;
+
+    // Sıkışma kontrolü: mainNav çok genişse son linki dropdown'a at
+    while (mainNav.offsetWidth > availableWidth && mainNav.children.length > 0) {
+        dropdownNav.insertBefore(mainNav.lastElementChild, dropdownNav.firstChild);
+        moreBtn.style.display = 'inline-block';
+    }
+
+    // Yer açılma kontrolü: mainNav'da yer varsa dropdown'dan geri al
+    // (120px ortalama bir link genişliği varsayımıyla)
+    while (mainNav.offsetWidth + 190 < availableWidth && dropdownNav.children.length > 0) {
+        mainNav.appendChild(dropdownNav.firstElementChild);
+    }
+
+    // Dropdown boşsa butonu gizle
+    if (dropdownNav.children.length === 0) {
+        moreBtn.style.display = 'none';
+    } else {
+        moreBtn.style.display = 'inline-block';
+    }
+}
+
+// Olayları dinle
+window.addEventListener('resize', adjustNav);
+window.addEventListener('load', adjustNav);
   document.querySelectorAll("#mini_zort_testi .zort-question").forEach(q=>{
     const correct = q.dataset.correct;
     const result = q.querySelector(".result");
@@ -718,7 +792,35 @@
   </div>
 </section>
 
+<section id="zort-enerji">
+  <h2>Küresel Zort Enerjisi</h2>
+  <div style="width:100%; background:#222; border-radius:20px; height:30px; border:1px solid var(--neon);">
+    <div id="energy-bar" style="width:0%; height:100%; background:linear-gradient(90deg, var(--neon), var(--neon2)); border-radius:20px; transition: 0.5s; box-shadow: 0 0 15px var(--neon);"></div>
+  </div>
+  <p id="energy-text" style="text-align:center; margin-top:10px;">Enerji Seviyesi: %0</p>
+</section>
 
+<script>
+  // Zort butonuna her basıldığında barı ilerleten ek fonksiyon
+  const energyBar = document.getElementById("energy-bar");
+  const energyText = document.getElementById("energy-text");
+  
+  function updateEnergy() {
+    let currentCount = parseInt(sessionStorage.getItem("zortCount") || 0);
+    let percent = Math.min(currentCount * 5, 100); // Her tık %5 artırır, max %100
+    energyBar.style.width = percent + "%";
+    energyText.textContent = `Enerji Seviyesi: %${percent}`;
+    
+    if(percent >= 100) {
+      energyText.innerHTML = "⚠️ <span style='color:var(--neon)'>KRİTİK ZORT SEVİYESİNE ULAŞILDI!</span>";
+    }
+  }
+
+  // Mevcut butona ek dinleyici
+  zortBtn.addEventListener("click", updateEnergy);
+  // Sayfa açıldığında mevcut durumu yükle
+  updateEnergy();
+</script>
 <br>
 <section id="isim-olusturucu">
   <h2>Sülaleye Katıl</h2>
@@ -835,19 +937,4 @@ document.addEventListener("keydown", (e) => {
     }
 });
 </script>
-
-
-
-
-
-
-
-
-
-
-
 </body></html>
-
-
-
-
