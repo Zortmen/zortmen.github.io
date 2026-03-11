@@ -880,6 +880,32 @@ window.addEventListener('load', adjustNav);
         document.getElementById("sonuc-alani").textContent = "BAŞVURUN GİZLİ HAT ÜZERİNDEN KONSEYE İLETİLDİ!";
     });
 }
+  document.addEventListener("DOMContentLoaded", () => {
+    const semboller = "!@#$%^&*()_+{}:<>?-=[];,./\\|";
+    const tumGlitcler = document.querySelectorAll('.glitch');
+
+    tumGlitcler.forEach(el => {
+        // Her öğenin kendi orijinal metnini hafızaya alalım
+        const orijinalMetin = el.innerText;
+
+        setInterval(() => {
+            let canliMetin = "";
+            
+            for (let i = 0; i < orijinalMetin.length; i++) {
+                // Boşlukları atla, diğer karakterleri %35 ihtimalle sembolle değiştir
+                if (orijinalMetin[i] === " " || orijinalMetin[i] === "\n") {
+                    canliMetin += orijinalMetin[i];
+                } else if (Math.random() < 0.35) { 
+                    canliMetin += semboller[Math.floor(Math.random() * semboller.length)];
+                } else {
+                    canliMetin += orijinalMetin[i];
+                }
+            }
+            
+            el.innerText = canliMetin;
+        }, 200); // 0.2 saniyede bir (200ms)
+    });
+});
 </script>
 
 </body></html>
