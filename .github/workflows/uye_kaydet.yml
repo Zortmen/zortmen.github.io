@@ -1,0 +1,20 @@
+name: Zortmen Kayıt Sistemi
+on:
+  repository_dispatch:
+    types: [yeni_uye_kaydi]
+
+jobs:
+  kaydet:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Python ile Dosyayı Güncelle
+        run: |
+          echo "${{ github.event.client_payload.isim }}" >> uyeler.txt
+      - name: Değişiklikleri Kaydet
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "Zort Bot"
+          git add uyeler.txt
+          git commit -m "Yeni üye: ${{ github.event.client_payload.isim }}"
+          git push
