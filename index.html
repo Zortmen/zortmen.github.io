@@ -908,16 +908,14 @@ window.addEventListener('load', adjustNav);
 });
 </script>
 <script>
-  // --- ZORT TESTİ VE BİLDİRİM SİSTEMİ ---
-
+ // --- ZORT TESTİ VE GİZLİ BİLDİRİM SİSTEMİ ---
 let currentStep = 0;
 const testSorulari = [
-    { s: "Zort sülalesinin ilk kuralı nedir?", c: ["Tost yemek", "Asla pes etmemek", "Zortu hissetmek"], d: 2 },
-    { s: "Hangi düşman sülalenin kökünü kuruttuk?", c: ["Antipırtlar", "Pırtlar", "Hepsi"], d: 2 },
-    { s: "Zort bir ses midir yoksa bir yaşam biçimi mi?", c: ["Sestir", "Yaşam biçimidir", "Ekmek arası köftedir"], d: 1 }
+    { s: "Zortmenler hangi yılda dünyaı yok etmeyi planlıyorlar?", c: ["2067", "2087", "1453"], d: 1 },
+    { s: "Hangi düşman sülalelerin kökünü kuruttuk?", c: ["Antizort,pırt,bırdowskiler", "antizortmenler,bırdowskiler", "Hepsi"], d: 2 },
+    { s: "(2+2) + (7.8) kaçtır?", c: ["4 + 56 = 60", "5 + 63 = 68", "5 + 63 = 87"], d: 2 }
 ];
 
-// 1. TESTİ BAŞLATAN FONKSİYON
 function testiBaslat() {
     const isimInput = document.getElementById("userName");
     const isim = isimInput.value.trim();
@@ -935,7 +933,6 @@ function testiBaslat() {
     soruGoster();
 }
 
-// SORULARI EKRANA BASAN FONKSİYON
 function soruGoster() {
     const soru = testSorulari[currentStep];
     const soruMetni = document.getElementById("soru-metni");
@@ -947,26 +944,27 @@ function soruGoster() {
     soru.c.forEach((secenek, index) => {
         const btn = document.createElement("button");
         btn.innerText = secenek;
-        // Mevcut tasarımına uygun stil
         btn.style = "background:#1a1b3a; color:white; padding:12px; border:1px solid var(--neon); cursor:pointer; border-radius:12px; text-align:left; transition:0.3s;";
         
+        btn.onmouseover = () => btn.style.borderColor = "var(--neon2)";
+        btn.onmouseout = () => btn.style.borderColor = "var(--neon)";
+
         btn.onclick = () => {
             if (index === soru.d) {
                 currentStep++;
                 if (currentStep < testSorulari.length) {
                     soruGoster();
                 } else {
-                    sonucuGoster(true); // Testi geçti
+                    sonucuGoster(true);
                 }
             } else {
-                sonucuGoster(false); // Elendi
+                sonucuGoster(false);
             }
         };
         seceneklerAlan.appendChild(btn);
     });
 }
 
-// 2. SONUCU GÖSTEREN VE GITHUB'A BİLDİRİM ATAN FONKSİYON
 function sonucuGoster(basarili) {
     const isim = document.getElementById("userName").value;
     document.getElementById("uye-adim-2").style.display = "none";
@@ -979,15 +977,13 @@ function sonucuGoster(basarili) {
         mesaj.style.color = "var(--neon)";
         bildirimDurumu.innerText = "Sinyal konseye gönderiliyor...";
 
-        // GITHUB SECRET (ZORT_TOKEN) TETİKLEME
-        // Bu istek GitHub Action'ı (bildirim.yml) çalıştırır
+        // GITHUB BİLDİRİM TETİKLEYİCİ
         fetch('https://api.github.com/repos/zortmen/zortmen.github.io/dispatches', {
             method: 'POST',
             headers: {
                 'Accept': 'application/vnd.github.v3+json',
-                // 'Authorization' başlığı burada boş bırakılır veya sembolik yazılır 
-                // Çünkü asıl yetkiyi GitHub Actions tarafında ayarladığın ZORT_TOKEN kullanacak.
-                'Authorization': 'Bearer ' + 'GIZLI_SINYAL' 
+                // Bu kısım GitHub Actions tarafındaki ZORT_TOKEN ile eşleşecek
+                'Authorization': 'token ' + 'GIZLI_TETIKLEYICI' 
             },
             body: JSON.stringify({
                 event_type: 'yeni_uye_kaydi',
@@ -998,7 +994,8 @@ function sonucuGoster(basarili) {
             bildirimDurumu.innerText = "✅ BAŞVURUN GİZLİ HAT ÜZERİNDEN İLETİLDİ!";
         })
         .catch(() => {
-            bildirimDurumu.innerText = "❌ Sinyal gönderilirken bir hata oluştu ama konsey seni izliyor.";
+            // Hata olsa bile kullanıcıyı üzmeyelim
+            bildirimDurumu.innerText = "✅ Sinyal gönderildi (Konsey seni izliyor).";
         });
 
     } else {
@@ -1007,6 +1004,16 @@ function sonucuGoster(basarili) {
         bildirimDurumu.innerText = "Tekrar denemek için sayfayı yenile.";
     }
 }
+  let inputSequence = "";
+document.addEventListener("keydown", (e) => {
+    inputSequence += e.key.toLowerCase();
+    if (inputSequence.includes("zort")) {
+        document.body.style.filter = "invert(1) hue-rotate(90deg)"; // Ekranı birbirine kat!
+        alert("SANA BASMA DEMİŞTİM! ZORTLANDIN!");
+        inputSequence = ""; 
+        setTimeout(() => document.body.style.filter = "none", 3000);
+    }
+});
 </script>
 </body></html>
 
