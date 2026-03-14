@@ -827,7 +827,7 @@ window.addEventListener('load', adjustNav);
   <div class="card" id="uye-formu">
     <div id="uye-adim-1">
       <p>Gerçek adını gir ve zort testini başlat:</p>
-      <input type="text" id="userName" placeholder="Adın nedir?.." style="padding:10px; border-radius:8px; border:none; width:200px; background:#1a1b3a; color:white; border:1px solid var(--neon2);">
+      <input type="text" id="userNameInput" placeholder="Adın nedir?.." style="padding:10px; border-radius:8px; border:none; width:200px; background:#1a1b3a; color:white; border:1px solid var(--neon2);">
       <button onclick="testiBaslat()" style="background:var(--neon); color:black; padding:10px 20px; border-radius:8px; cursor:pointer; font-weight:bold; border:none; margin-left:10px;">TESTE GİR</button>
     </div>
 
@@ -837,7 +837,7 @@ window.addEventListener('load', adjustNav);
     </div>
 
     <div id="uye-adim-sonuc" style="display:none;">
-      <h3 id="sonuc-mesaji"></h3>
+      <h3 id="sonuc-mesaji" style="color:var(--neon)"></h3>
       <p id="bildirim-durumu" style="font-size:13px; opacity:0.7; margin-top:10px;"></p>
     </div>
   </div>
@@ -864,22 +864,7 @@ window.addEventListener('load', adjustNav);
 </footer>
 
 <script>
- function uyeYap() {
-    const kullaniciAdi = document.getElementById("isim-alani").value;
-
-    fetch('https://api.github.com/repos/zortmen/zortmen.github.io/dispatches', {
-        method: 'POST',
-        headers: {
-            'Accept': 'application/vnd.github.v3+json'
-        },
-        body: JSON.stringify({
-            event_type: 'yeni_uye_kaydi',
-            client_payload: { isim: kullaniciAdi }
-        })
-    }).then(() => {
-        document.getElementById("sonuc-alani").textContent = "BAŞVURUN GİZLİ HAT ÜZERİNDEN KONSEYE İLETİLDİ!";
-    });
-}
+ 
   document.addEventListener("DOMContentLoaded", () => {
     const semboller = "!@#$%^&*()_+{}:<>?-=[];,./\\|";
     const tumGlitcler = document.querySelectorAll('.glitch');
@@ -892,10 +877,10 @@ window.addEventListener('load', adjustNav);
             let canliMetin = "";
             
             for (let i = 0; i < orijinalMetin.length; i++) {
-                // Boşlukları atla, diğer karakterleri %35 ihtimalle sembolle değiştir
+                // Boşlukları atla, diğer karakterleri %60 ihtimalle sembolle değiştir
                 if (orijinalMetin[i] === " " || orijinalMetin[i] === "\n") {
                     canliMetin += orijinalMetin[i];
-                } else if (Math.random() < 0.35) { 
+                } else if (Math.random() < 0.60) { 
                     canliMetin += semboller[Math.floor(Math.random() * semboller.length)];
                 } else {
                     canliMetin += orijinalMetin[i];
@@ -908,112 +893,86 @@ window.addEventListener('load', adjustNav);
 });
 </script>
 <script>
- // --- ZORT TESTİ VE GİZLİ BİLDİRİM SİSTEMİ ---
-let currentStep = 0;
-const testSorulari = [
-    { s: "Zortmenler hangi yılda dünyaı yok etmeyi planlıyorlar?", c: ["2067", "2087", "1453"], d: 1 },
-    { s: "Hangi düşman sülalelerin kökünü kuruttuk?", c: ["Antizort,pırt,bırdowskiler", "antizortmenler,bırdowskiler", "Hepsi"], d: 2 },
-    { s: "(2+2) + (7.8) kaçtır?", c: ["4 + 56 = 60", "5 + 63 = 68", "5 + 63 = 87"], d: 2 }
+let testSorulari = [
+    { soru: "Zortmenler hangi yılda dünyayı ele geçirecek?", secenekler: ["2067", "2050", "2087", "1453"] },
+    { soru: "2 + 2 kaç eder? (Zort matematiğine göre)", secenekler: ["3", "4", "5", "alırken 3 satarken 5"] }
 ];
 
+let guncelSoru = 0;
+let kullaniciCevaplari = [];
+
 function testiBaslat() {
-    const isimInput = document.getElementById("userName");
-    const isim = isimInput.value.trim();
-
-    if (isim === "") {
-        alert("Sülaleye girmek için bir ad girmelisin!");
-        return;
+    // JS tarafındaki ID, HTML'deki 'userNameInput' ile eşitlendi.
+    const isimAlani = document.getElementById("userNameInput");
+    const isim = isimAlani ? isimAlani.value : "";
+    
+    if (!isim || isim.trim() === "") { 
+        alert("Önce adını bahşetmelisin!"); 
+        return; 
     }
-
-    // Adımları değiştir
+    
     document.getElementById("uye-adim-1").style.display = "none";
     document.getElementById("uye-adim-2").style.display = "block";
-    
-    currentStep = 0; 
     soruGoster();
 }
 
 function soruGoster() {
-    const soru = testSorulari[currentStep];
-    const soruMetni = document.getElementById("soru-metni");
-    const seceneklerAlan = document.getElementById("test-secenekleri");
+    const soru = testSorulari[guncelSoru];
+    document.getElementById("soru-metni").innerText = soru.soru;
+    const seceneklerKutusu = document.getElementById("test-secenekleri");
+    seceneklerKutusu.innerHTML = "";
 
-    soruMetni.innerText = `Soru ${currentStep + 1}: ${soru.s}`;
-    seceneklerAlan.innerHTML = "";
-
-    soru.c.forEach((secenek, index) => {
+    soru.secenekler.forEach(s => {
         const btn = document.createElement("button");
-        btn.innerText = secenek;
-        btn.style = "background:#1a1b3a; color:white; padding:12px; border:1px solid var(--neon); cursor:pointer; border-radius:12px; text-align:left; transition:0.3s;";
+        btn.innerText = s;
+        btn.style = "background:#1a1b3a; color:white; padding:12px; border:1px solid var(--neon2); border-radius:12px; cursor:pointer; text-align:left; transition:0.3s; font-family:inherit;";
         
-        btn.onmouseover = () => btn.style.borderColor = "var(--neon2)";
-        btn.onmouseout = () => btn.style.borderColor = "var(--neon)";
-
-        btn.onclick = () => {
-            if (index === soru.d) {
-                currentStep++;
-                if (currentStep < testSorulari.length) {
-                    soruGoster();
-                } else {
-                    sonucuGoster(true);
-                }
-            } else {
-                sonucuGoster(false);
-            }
-        };
-        seceneklerAlan.appendChild(btn);
+        btn.onmouseover = () => btn.style.borderColor = "#7cff00";
+        btn.onmouseout = () => btn.style.borderColor = "#00eaff";
+        
+        btn.onclick = () => cevapVer(s);
+        seceneklerKutusu.appendChild(btn);
     });
 }
 
-function sonucuGoster(basarili) {
-    const isim = document.getElementById("userName").value;
-    document.getElementById("uye-adim-2").style.display = "none";
-    document.getElementById("uye-adim-sonuc").style.display = "block";
-    const mesaj = document.getElementById("sonuc-mesaji");
-    const bildirimDurumu = document.getElementById("bildirim-durumu");
-    
-    if (basarili) {
-        mesaj.innerText = "TEBRİKLER! TESTİ GEÇTİN.";
-        mesaj.style.color = "var(--neon)";
-        bildirimDurumu.innerText = "Sinyal konseye gönderiliyor...";
+function cevapVer(cevap) {
+    kullaniciCevaplari.push(cevap);
+    guncelSoru++;
 
-        // GITHUB BİLDİRİM TETİKLEYİCİ
-        fetch('https://api.github.com/repos/zortmen/zortmen.github.io/dispatches', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/vnd.github.v3+json',
-                // Bu kısım GitHub Actions tarafındaki ZORT_TOKEN ile eşleşecek
-                'Authorization': 'token ' + 'GIZLI_TETIKLEYICI' 
-            },
-            body: JSON.stringify({
-                event_type: 'yeni_uye_kaydi',
-                client_payload: { isim: isim }
-            })
-        })
-        .then(() => {
-            bildirimDurumu.innerText = "✅ BAŞVURUN GİZLİ HAT ÜZERİNDEN İLETİLDİ!";
-        })
-        .catch(() => {
-            // Hata olsa bile kullanıcıyı üzmeyelim
-            bildirimDurumu.innerText = "✅ Sinyal gönderildi (Konsey seni izliyor).";
-        });
-
+    if (guncelSoru < testSorulari.length) {
+        soruGoster();
     } else {
-        mesaj.innerText = "ELENDİN! Yeterince zort değilsin.";
-        mesaj.style.color = "#ff3333";
-        bildirimDurumu.innerText = "Tekrar denemek için sayfayı yenile.";
+        zortKonseyineGonder();
     }
 }
-  let inputSequence = "";
-document.addEventListener("keydown", (e) => {
-    inputSequence += e.key.toLowerCase();
-    if (inputSequence.includes("zort")) {
-        document.body.style.filter = "invert(1) hue-rotate(90deg)"; // Ekranı birbirine kat!
-        alert("SANA BASMA DEMİŞTİM! ZORTLANDIN!");
-        inputSequence = ""; 
-        setTimeout(() => document.body.style.filter = "none", 3000);
-    }
-});
+
+function zortKonseyineGonder() {
+    // Burada da ID düzeltildi.
+    const isim = document.getElementById("userNameInput").value;
+    
+    const formURL = "https://docs.google.com/forms/u/0/d/e/1FAIpQLSfB8H6L17TtRzMzuc9zxDGqUDWCbVGyDRPhjDVEtHYLRRceamzY/formResponse"; 
+    
+    const veri = new FormData();
+    veri.append("entry.1364929248", isim);               
+    veri.append("entry.1558683179", kullaniciCevaplari[0]); 
+    veri.append("entry.1637030429", kullaniciCevaplari[1]); 
+
+    fetch(formURL, {
+        method: "POST",
+        mode: "no-cors",
+        body: veri
+    })
+    .then(() => {
+        document.getElementById("uye-adim-2").style.display = "none";
+        document.getElementById("uye-adim-sonuc").style.display = "block";
+        document.getElementById("sonuc-mesaji").innerText = "HOŞ GELDİN " + isim.toUpperCase() + "!";
+        document.getElementById("bildirim-durumu").innerHTML = "Kaydın gizli tünellerden <b>Zortmen Arşivine</b> iletildi.<br><br><img src='https://zortmen.github.io/zortmen.png' width='100px' style='border-radius:20%'>";
+    })
+    .catch(err => {
+        console.error("Bağlantı Hatası:", err);
+        alert("Konsey bağlantısında parazit var, tekrar dene!");
+    });
+}
 </script>
 </body></html>
 
