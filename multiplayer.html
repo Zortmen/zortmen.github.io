@@ -17,6 +17,23 @@
         .btn:active { background: #666; border-bottom: 2px solid #000; transform: translateY(4px); }
         .btn.jump { background: #f1c40f; width: 100px; height: 100px; }
         button { padding: 12px 25px; background: #e67e22; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+.player-container {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.nickname {
+    font-size: 12px;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 2px 5px;
+    border-radius: 4px;
+    margin-bottom: 5px; /* Karakterin biraz üzerinde durması için */
+    white-space: nowrap;
+}
+    
     </style>
 </head>
 <body>
@@ -25,6 +42,7 @@
     <h1 style="color: #e67e22; margin-top: 0;">SONSUZ MACERA</h1>
     <div id="my-id-box" style="margin-bottom: 15px; font-size: 18px; background: #333; padding: 10px; border-radius: 8px;">ID Alınıyor...</div>
     <input type="text" id="peer-id-input" placeholder="Arkadaşının ID'si" style="padding: 10px; margin-bottom: 10px; text-align: center;"><br>
+    <input type="text" id="usernameInput" placeholder="Lakabını yaz...">
     <button onclick="connectToPeer()">DÜNYAYA KATIL</button>
 </div>
 
@@ -112,7 +130,27 @@ function connectToPeer() {
         setupConnection(); 
     }
 }
+// Yeni bir oyuncu oluştururken (Örn: createPlayer fonksiyonu içinde)
+function createPlayerElement(id, name) {
+    const container = document.createElement('div');
+    container.className = 'player-container';
+    container.id = 'player-' + id;
 
+    // Lakap (Nickname) kısmı
+    const nameTag = document.createElement('div');
+    nameTag.className = 'nickname';
+    nameTag.innerText = name; // Burada senin belirlediğin lakap yazacak
+
+    // Karakterin kendisi (Görsel veya Kare)
+    const character = document.createElement('div');
+    character.className = 'player-sprite'; 
+    // Karakterin görsel özelliklerini buraya tanımla
+
+    container.appendChild(nameTag);
+    container.appendChild(character);
+    
+    document.getElementById('game-world').appendChild(container);
+}
 // CHAT FONKSİYONLARI
 function addChatMessage(msg, type) {
     let div = document.createElement('div');
