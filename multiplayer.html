@@ -42,6 +42,15 @@
 </div>
 
 <script>
+// Rastgele kısa kod oluşturan fonksiyon
+function generateShortID() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let result = '';
+    for (let i = 0; i < 5; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return 'zort2087-' + result;
+}
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const chatArea = document.getElementById('chat-area');
@@ -50,7 +59,9 @@ const sendBtn = document.getElementById('sendBtn');
 canvas.width = window.innerWidth; 
 canvas.height = window.innerHeight * 0.6;
 
-let peer = new Peer();
+
+const myCustomID = generateShortID();
+let peer = new Peer(myCustomID);
 let conn;
 const gravity = 0.8;
 const friction = 0.85;
