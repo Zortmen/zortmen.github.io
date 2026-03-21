@@ -86,10 +86,9 @@ const friction = 0.85;
 let cameraX = 0;
 
 let players = {
-    self: { x: 100, y: 100, vX: 0, vY: 0, color: '#3498db', rotation: 0, isFlipping: false, ground: false, jumpCount: 0 },
-    other: { x: -200, y: -200, color: '#e74c3c', rotation: 0 }
+    self: { x: 100, y: 100, vX: 0, vY: 0, color: '#3498db', rotation: 0, isFlipping: false, ground: false, jumpCount: 0, name: '' },
+    other: { x: -200, y: -200, color: '#e74c3c', rotation: 0, name: '' }
 };
-
 let seed = 12345;
 function seededRandom() {
     seed = (seed * 9301 + 49297) % 233280;
@@ -175,19 +174,33 @@ chatInput.onkeydown = (e) => { if(e.key === 'Enter') sendMessage(); };
 
 function setupConnection() {
     conn.on('open', () => {
+        // Inputtan ismi al, boşsa 'Oyuncu' yap
+        players.self.name = document.getElementById('usernameInput').value || "Oyuncu";
+        
         document.getElementById('setup').style.display = 'none';
         setInterval(() => {
-            if(conn && conn.open) conn.send({ type: 'sync', x: players.self.x, y: players.self.y, rot: players.self.rotation });
+            if(conn && conn.open) {
+                // 'name' bilgisini de pakete ekle
+                conn.send({ 
+                    type: 'sync', 
+                    x: players.self.x, 
+                    y: players.self.y, 
+                    rot: players.self.rotation,
+                    name: players.self.name 
+                });
+            }
         }, 16);
     });
+
     conn.on('data', data => {
         if(data.type === 'sync') { 
             players.other.x = data.x; 
             players.other.y = data.y; 
-            players.other.rotation = data.rot; 
+            players.other.rotation = data.rot;
+            players.other.name = data.name; // Karşıdan gelen ismi kaydet
         }
         if(data.type === 'chat') {
-            addChatMessage(data.msg, 'them');
+            addChatMessage(data.msg, 'them', data.name);
         }
     });
 }
@@ -255,9 +268,14 @@ function update() {
 }
 
 function draw() {
+    // 1. Önce ekranı temizle (Sıralama çok önemli!)
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
     ctx.save();
+    // 2. Kamera hareketini uygula
     ctx.translate(-cameraX, 0);
+    
+    // 3. Dünyayı çiz (Lav, Platformlar, Dikenler)
     ctx.fillStyle = "#ff4500";
     worldItems.lava.forEach(l => { ctx.fillRect(l.x, l.y, l.w, l.h); });
     worldItems.platforms.forEach(p => {
@@ -269,15 +287,35 @@ function draw() {
     worldItems.spikes.forEach(s => {
         ctx.beginPath(); ctx.moveTo(s.x, s.y + s.h); ctx.lineTo(s.x + s.w / 2, s.y); ctx.lineTo(s.x + s.w, s.y + s.h); ctx.fill();
     });
+
+    // 4. Oyuncuları ve isimlerini çiz
     [players.self, players.other].forEach(p => {
+        // --- İSİM YAZDIRMA ---
+        if(p.name) {
+            ctx.save();
+            ctx.font = "bold 16px Arial";
+            ctx.fillStyle = "white";
+            ctx.textAlign = "center";
+            // İsim, karakterin x ortasında ve y tepesinde olmalı
+            ctx.fillText(p.name, p.x + 25, p.y - 15);
+            ctx.restore();
+        }
+
+        // --- KARAKTER ÇİZİMİ ---
         ctx.save();
         ctx.translate(p.x + 25, p.y + 25);
         ctx.rotate(p.rotation);
-        ctx.fillStyle = p.color; ctx.fillRect(-25, -25, 50, 50);
-        ctx.fillStyle = "white"; ctx.fillRect(-15, -15, 10, 10); ctx.fillRect(5, -15, 10, 10);
+        ctx.fillStyle = p.color; 
+        ctx.fillRect(-25, -25, 50, 50);
+        ctx.fillStyle = "white"; 
+        ctx.fillRect(-15, -15, 10, 10); 
+        ctx.fillRect(5, -15, 10, 10);
         ctx.restore();
     });
+
     ctx.restore();
+    
+    // 5. Mantığı güncelle ve döngüyü sürdür
     update();
     requestAnimationFrame(draw);
 }
