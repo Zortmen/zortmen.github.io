@@ -17,27 +17,11 @@
         .btn:active { background: #666; border-bottom: 2px solid #000; transform: translateY(4px); }
         .btn.jump { background: #f1c40f; width: 100px; height: 100px; }
         button { padding: 12px 25px; background: #e67e22; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
-.player-container {
-    position: absolute;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.nickname {
-    font-size: 12px;
-    background: rgba(0, 0, 0, 0.5);
-    color: white;
-    padding: 2px 5px;
-    border-radius: 4px;
-    margin-bottom: 5px; /* Karakterin biraz üzerinde durması için */
-    white-space: nowrap;
-}
-    
+        #level-ui { position: absolute; top: 10px; left: 10px; font-size: 20px; color: #f1c40f; text-shadow: 2px 2px #000; z-index: 5; }
     </style>
 </head>
 <body>
-
+<div id="level-ui">Level: 1</div>
 <div id="setup">
     <h1 style="color: #e67e22; margin-top: 0;">SONSUZ MACERA</h1>
     <div id="my-id-box" style="margin-bottom: 15px; font-size: 18px; background: #333; padding: 10px; border-radius: 8px;">ID Alınıyor...</div>
@@ -60,23 +44,19 @@
 </div>
 
 <script>
-// Rastgele kısa kod oluşturan fonksiyon
 function generateShortID() {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     let result = '';
-    for (let i = 0; i < 5; i++) {
-        result += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
+    for (let i = 0; i < 5; i++) { result += chars.charAt(Math.floor(Math.random() * chars.length)); }
     return 'zort2087-' + result;
 }
+
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const chatArea = document.getElementById('chat-area');
 const chatInput = document.getElementById('chat-input');
 const sendBtn = document.getElementById('sendBtn');
-canvas.width = window.innerWidth; 
-canvas.height = window.innerHeight * 0.6;
-
+canvas.width = window.innerWidth; canvas.height = window.innerHeight * 0.6;
 
 const myCustomID = generateShortID();
 let peer = new Peer(myCustomID);
@@ -84,24 +64,27 @@ let conn;
 const gravity = 0.8;
 const friction = 0.85;
 let cameraX = 0;
+let currentLevel = 1;
+let gameOver = false;
 
 let players = {
     self: { x: 100, y: 100, vX: 0, vY: 0, color: '#3498db', rotation: 0, isFlipping: false, ground: false, jumpCount: 0, name: '' },
-    other: { x: -200, y: -200, color: '#e74c3c', rotation: 0, name: '' }
+    other: { x: -500, y: -500, color: '#e74c3c', rotation: 0, name: '' }
 };
+
 let seed = 12345;
 function seededRandom() {
     seed = (seed * 9301 + 49297) % 233280;
     return seed / 233280;
 }
 
-let worldItems = { platforms: [], lava: [], spikes: [] };
+let worldItems = { platforms: [], lava: [], spikes: [], finishLine: null };
 let lastX = 0;
 
 function generateChunk(startX, width) {
     let x = startX;
     worldItems.platforms.push({ x: startX, y: canvas.height - 40, w: width, h: 40, isGround: true });
-    while (x < startX + width) {
+    while (x < startX + width - 400) {
         let gap = 150 + seededRandom() * 150;
         let pW = 200 + seededRandom() * 200;
         let pY = canvas.height - (150 + seededRandom() * 200);
@@ -110,47 +93,20 @@ function generateChunk(startX, width) {
         if (seededRandom() > 0.7) worldItems.lava.push({ x: x + gap - 100, y: canvas.height - 60, w: 100, h: 25 });
         x += gap + pW;
     }
-    lastX = x;
+    worldItems.finishLine = { x: startX + width - 100, y: 0, w: 20, h: canvas.height };
+    lastX = startX + width;
 }
 
-worldItems.platforms.push({ x: 0, y: canvas.height - 100, w: 800, h: 100 });
-generateChunk(800, 5000);
+generateChunk(0, 5000);
 
 peer.on('open', id => document.getElementById('my-id-box').innerText = "ID: " + id);
-peer.on('connection', c => { 
-    conn = c; 
-    setupConnection(); 
-});
+peer.on('connection', c => { conn = c; setupConnection(); });
 
 function connectToPeer() {
     let id = document.getElementById('peer-id-input').value;
-    if(id) { 
-        conn = peer.connect(id); 
-        setupConnection(); 
-    }
+    if(id) { conn = peer.connect(id); setupConnection(); }
 }
-// Yeni bir oyuncu oluştururken (Örn: createPlayer fonksiyonu içinde)
-function createPlayerElement(id, name) {
-    const container = document.createElement('div');
-    container.className = 'player-container';
-    container.id = 'player-' + id;
 
-    // Lakap (Nickname) kısmı
-    const nameTag = document.createElement('div');
-    nameTag.className = 'nickname';
-    nameTag.innerText = name; // Burada senin belirlediğin lakap yazacak
-
-    // Karakterin kendisi (Görsel veya Kare)
-    const character = document.createElement('div');
-    character.className = 'player-sprite'; 
-    // Karakterin görsel özelliklerini buraya tanımla
-
-    container.appendChild(nameTag);
-    container.appendChild(character);
-    
-    document.getElementById('game-world').appendChild(container);
-}
-// CHAT FONKSİYONLARI
 function addChatMessage(msg, type) {
     let div = document.createElement('div');
     div.style.padding = "2px 0";
@@ -174,78 +130,59 @@ chatInput.onkeydown = (e) => { if(e.key === 'Enter') sendMessage(); };
 
 function setupConnection() {
     conn.on('open', () => {
-        // Inputtan ismi al, boşsa 'Oyuncu' yap
         players.self.name = document.getElementById('usernameInput').value || "Oyuncu";
-        
         document.getElementById('setup').style.display = 'none';
         setInterval(() => {
             if(conn && conn.open) {
-                // 'name' bilgisini de pakete ekle
-                conn.send({ 
-                    type: 'sync', 
-                    x: players.self.x, 
-                    y: players.self.y, 
-                    rot: players.self.rotation,
-                    name: players.self.name 
-                });
+                // Konumu ekranın altına göre normalize et
+                let relY = canvas.height - players.self.y;
+                conn.send({ type: 'sync', x: players.self.x, relY: relY, rot: players.self.rotation, name: players.self.name, level: currentLevel });
             }
         }, 16);
     });
 
     conn.on('data', data => {
-        if(data.type === 'sync') { 
-            players.other.x = data.x; 
-            players.other.y = data.y; 
+        if(data.type === 'sync') {
+            players.other.x = data.x;
+            // Karşı tarafın gönderdiği "alt hiza" bilgisini kendi ekranına göre ayarla
+            players.other.y = canvas.height - data.relY;
             players.other.rotation = data.rot;
-            players.other.name = data.name; // Karşıdan gelen ismi kaydet
+            players.other.name = data.name;
+            if(data.level > currentLevel) nextLevel();
         }
-        if(data.type === 'chat') {
-            addChatMessage(data.msg, 'them', data.name);
-        }
+        if(data.type === 'chat') addChatMessage(data.msg, 'them');
     });
 }
 
-// HAREKET SİSTEMİ
 const keys = { left: false, right: false };
-
 function handleJump() {
     let p = players.self;
-    if (p.ground) {
-        p.vY = -16; p.ground = false; p.jumpCount = 1; p.isFlipping = true;
-    } else if (p.jumpCount < 2) {
-        p.vY = -14; p.jumpCount = 2; p.rotation = 0; p.isFlipping = true;
-    }
+    if (p.ground) { p.vY = -16; p.ground = false; p.jumpCount = 1; p.isFlipping = true; }
+    else if (p.jumpCount < 2) { p.vY = -14; p.jumpCount = 2; p.rotation = 0; p.isFlipping = true; }
 }
 
-const bindBtn = (id, keyName) => {
-    const el = document.getElementById(id);
-    const start = (e) => { e.preventDefault(); if(keyName === 'up') handleJump(); else keys[keyName] = true; };
-    const end = (e) => { e.preventDefault(); if(keyName !== 'up') keys[keyName] = false; };
-    el.addEventListener('touchstart', start, {passive: false});
-    el.addEventListener('touchend', end, {passive: false});
-    el.addEventListener('mousedown', start);
-    el.addEventListener('mouseup', end);
-    el.addEventListener('mouseleave', end);
-};
-
-bindBtn('btnLeft', 'left');
-bindBtn('btnRight', 'right');
-bindBtn('btnUp', 'up');
-
-window.onkeydown = e => {
-    if(e.key === 'a' || e.key === 'ArrowLeft') keys.left = true;
-    if(e.key === 'd' || e.key === 'ArrowRight') keys.right = true;
-    if(e.key === 'w' || e.key === ' ' || e.key === 'ArrowUp') handleJump();
-};
-window.onkeyup = e => {
-    if(e.key === 'a' || e.key === 'ArrowLeft') keys.left = false;
-    if(e.key === 'd' || e.key === 'ArrowRight') keys.right = false;
-};
+function nextLevel() {
+    if(currentLevel >= 10) { gameOver = true; return; }
+    currentLevel++;
+    document.getElementById('level-ui').innerText = "Level: " + currentLevel;
+    players.self.x = 100; players.self.y = 100;
+    worldItems = { platforms: [], lava: [], spikes: [], finishLine: null };
+    seed += currentLevel; 
+    generateChunk(0, 5000);
+}
 
 function update() {
+    if(gameOver) return;
     let p = players.self;
     if (keys.left) p.vX = -7; else if (keys.right) p.vX = 7; else p.vX *= friction;
     p.vY += gravity; p.x += p.vX; p.y += p.vY;
+
+    if(players.other.x !== -500) {
+        let dist = p.x - players.other.x;
+        if (dist > 800) p.x = players.other.x + 800;
+        if (dist < -800) p.x = players.other.x - 800;
+    }
+
     if (p.isFlipping) {
         p.rotation += 0.15;
         if (p.rotation >= Math.PI * 2) { p.rotation = 0; p.isFlipping = false; }
@@ -258,24 +195,33 @@ function update() {
     });
     [...worldItems.lava, ...worldItems.spikes].forEach(h => {
         if (p.x + 40 > h.x && p.x < h.x + h.w && p.y + 40 > h.y && p.y < h.y + h.h) {
-            p.x = cameraX + 50; p.y = 100; p.vX = 0; p.vY = 0;
+            p.x = 100; p.y = 100; p.vX = 0; p.vY = 0;
         }
     });
-    if (p.y > canvas.height) { p.x = cameraX + 50; p.y = 100; p.vY = 0; }
+
+    if(worldItems.finishLine && p.x > worldItems.finishLine.x) { nextLevel(); }
+    if (p.y > canvas.height) { p.x = 100; p.y = 100; p.vY = 0; }
+    
     cameraX = p.x - 200;
     if (cameraX < 0) cameraX = 0;
-    if (p.x > lastX - 2500) generateChunk(lastX, 5000);
 }
 
 function draw() {
-    // 1. Önce ekranı temizle (Sıralama çok önemli!)
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
+    if(gameOver) {
+        ctx.fillStyle = "white"; ctx.font = "40px Arial"; ctx.textAlign = "center";
+        ctx.fillText("OYUN BİTTİ - TEBRİKLER!", canvas.width/2, canvas.height/2);
+        return;
+    }
     ctx.save();
-    // 2. Kamera hareketini uygula
     ctx.translate(-cameraX, 0);
     
-    // 3. Dünyayı çiz (Lav, Platformlar, Dikenler)
+    if(worldItems.finishLine) {
+        ctx.fillStyle = "#f1c40f"; ctx.fillRect(worldItems.finishLine.x, 0, 10, canvas.height);
+        ctx.fillStyle = "white"; ctx.font = "20px Arial";
+        ctx.fillText("BİTİŞ", worldItems.finishLine.x - 20, 50);
+    }
+
     ctx.fillStyle = "#ff4500";
     worldItems.lava.forEach(l => { ctx.fillRect(l.x, l.y, l.w, l.h); });
     worldItems.platforms.forEach(p => {
@@ -288,37 +234,44 @@ function draw() {
         ctx.beginPath(); ctx.moveTo(s.x, s.y + s.h); ctx.lineTo(s.x + s.w / 2, s.y); ctx.lineTo(s.x + s.w, s.y + s.h); ctx.fill();
     });
 
-    // 4. Oyuncuları ve isimlerini çiz
     [players.self, players.other].forEach(p => {
-        // --- İSİM YAZDIRMA ---
         if(p.name) {
-            ctx.save();
-            ctx.font = "bold 16px Arial";
-            ctx.fillStyle = "white";
-            ctx.textAlign = "center";
-            // İsim, karakterin x ortasında ve y tepesinde olmalı
+            ctx.fillStyle = "white"; ctx.font = "bold 16px Arial"; ctx.textAlign = "center";
             ctx.fillText(p.name, p.x + 25, p.y - 15);
-            ctx.restore();
         }
-
-        // --- KARAKTER ÇİZİMİ ---
         ctx.save();
         ctx.translate(p.x + 25, p.y + 25);
         ctx.rotate(p.rotation);
-        ctx.fillStyle = p.color; 
-        ctx.fillRect(-25, -25, 50, 50);
-        ctx.fillStyle = "white"; 
-        ctx.fillRect(-15, -15, 10, 10); 
-        ctx.fillRect(5, -15, 10, 10);
+        ctx.fillStyle = p.color; ctx.fillRect(-25, -25, 50, 50);
+        ctx.fillStyle = "white"; ctx.fillRect(-15, -15, 10, 10); ctx.fillRect(5, -15, 10, 10);
         ctx.restore();
     });
 
     ctx.restore();
-    
-    // 5. Mantığı güncelle ve döngüyü sürdür
     update();
     requestAnimationFrame(draw);
 }
+
+const bindBtn = (id, keyName) => {
+    const el = document.getElementById(id);
+    const start = (e) => { e.preventDefault(); if(keyName === 'up') handleJump(); else keys[keyName] = true; };
+    const end = (e) => { e.preventDefault(); if(keyName !== 'up') keys[keyName] = false; };
+    el.addEventListener('touchstart', start, {passive: false});
+    el.addEventListener('touchend', end, {passive: false});
+    el.addEventListener('mousedown', start); el.addEventListener('mouseup', end); el.addEventListener('mouseleave', end);
+};
+bindBtn('btnLeft', 'left'); bindBtn('btnRight', 'right'); bindBtn('btnUp', 'up');
+
+window.onkeydown = e => {
+    if(e.key === 'a' || e.key === 'ArrowLeft') keys.left = true;
+    if(e.key === 'd' || e.key === 'ArrowRight') keys.right = true;
+    if(e.key === 'w' || e.key === ' ' || e.key === 'ArrowUp') handleJump();
+};
+window.onkeyup = e => {
+    if(e.key === 'a' || e.key === 'ArrowLeft') keys.left = false;
+    if(e.key === 'd' || e.key === 'ArrowRight') keys.right = false;
+};
+
 draw();
 </script>
 </body>
